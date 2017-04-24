@@ -20,7 +20,7 @@ function __$styleInject(css, returnValue) {
   head.appendChild(style);
   return returnValue;
 }
-__$styleInject(".dom-inspector {\r\n    position: fixed;\r\n    border-style: solid;\r\n    pointer-events: none;\r\n}\r\n\r\n.dom-inspector-theme-default {\r\n    background-color: rgba(160, 210, 255, 0.75);\r\n    border-color: #ffefbd;\r\n}\r\n", undefined);
+__$styleInject(".dom-inspector {\r\n    position: fixed;\r\n    border-style: solid;\r\n    pointer-events: none;\r\n}\r\n\r\n.dom-inspector:before {\r\n\tcontent: '';\r\n\tposition: absolute;\r\n\tz-index: -1;\r\n\tdisplay: block;\r\n}\r\n\r\n.dom-inspector:after {\r\n\tcontent: '';\r\n\tposition: absolute;\r\n\tz-index: -1;\r\n\tdisplay: block;\r\n}\r\n\r\n.dom-inspector-theme-default {\r\n    background-color: rgba(160, 210, 255, 0.75);\r\n    border-color: #ffeebc;\r\n}\r\n\r\n// imitate margin\r\n.dom-inspector-theme-default:before {\r\n\tbackground-color: #f9cc9d;\r\n}\r\n\r\n// imitate padding\r\n.dom-inspector-theme-default:after {\r\n\tbackground-color: #c4dfb8;\r\n}\r\n", undefined);
 
 function mixin(target, source) {
 	var targetCopy = target;

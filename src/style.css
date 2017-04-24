@@ -4,7 +4,31 @@
     pointer-events: none;
 }
 
+.dom-inspector:before {
+	content: '';
+	position: absolute;
+	z-index: -1;
+	display: block;
+}
+
+.dom-inspector:after {
+	content: '';
+	position: absolute;
+	z-index: -1;
+	display: block;
+}
+
 .dom-inspector-theme-default {
     background-color: rgba(160, 210, 255, 0.75);
-    border-color: #ffefbd;
+    border-color: #ffeebc;
+}
+
+// imitate margin
+.dom-inspector-theme-default:before {
+	background-color: #f9cc9d;
+}
+
+// imitate padding
+.dom-inspector-theme-default:after {
+	background-color: #c4dfb8;
 }

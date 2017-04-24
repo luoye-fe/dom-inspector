@@ -2,8 +2,8 @@ const inspector = new DomInspector({
 	theme: 'dom-inspector-theme-default'
 });
 
-inspector.destroy();
-inspector.enable();
+// inspector.destroy();
+// inspector.enable();
 // inspector.disable();
 
 

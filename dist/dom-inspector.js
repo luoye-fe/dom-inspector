@@ -325,13 +325,15 @@ var DomInspector = function () {
 		this.theme = options.theme || 'dom-inspector-theme-default';
 		this.overlay = '';
 		this.overlayId = '';
-		this._init();
 		this._throttleOnMove = throttle(this._onMove.bind(this), 100);
+		this.destroyed = false;
+		this._init();
 	}
 
 	createClass(DomInspector, [{
 		key: 'enable',
 		value: function enable() {
+			if (this.destroyed) return console.warn('Inspector instance has been destroyed! Please redeclare it.');
 			this.overlay.style.display = 'block';
 			this.root.addEventListener('mousemove', this._throttleOnMove);
 		}
@@ -344,8 +346,12 @@ var DomInspector = function () {
 			this.root.removeEventListener('mousemove', this._throttleOnMove);
 		}
 	}, {
-		key: 'destory',
-		value: function destory() {}
+		key: 'destroy',
+		value: function destroy() {
+			this.destroyed = true;
+			this.disable();
+			this.overlay.remove();
+		}
 	}, {
 		key: '_init',
 		value: function _init() {

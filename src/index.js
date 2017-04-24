@@ -9,10 +9,12 @@ class DomInspector {
 		this.theme = options.theme || 'dom-inspector-theme-default';
 		this.overlay = '';
 		this.overlayId = '';
-		this._init();
 		this._throttleOnMove = throttle(this._onMove.bind(this), 100);
+		this.destroyed = false;
+		this._init();
 	}
 	enable() {
+		if (this.destroyed) return console.warn('Inspector instance has been destroyed! Please redeclare it.');
 		this.overlay.style.display = 'block';
 		this.root.addEventListener('mousemove', this._throttleOnMove);
 	}
@@ -22,8 +24,10 @@ class DomInspector {
 		this.overlay.style.height = 0;
 		this.root.removeEventListener('mousemove', this._throttleOnMove);
 	}
-	destory() {
-
+	destroy() {
+		this.destroyed = true;
+		this.disable();
+		this.overlay.remove();
 	}
 	_init() {
 		this.overlayId = `dom-inspector-${Date.now()}`;

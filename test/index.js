@@ -2,9 +2,10 @@ const inspector = new DomInspector({
 	theme: 'dom-inspector-theme-default'
 });
 
+inspector.destroy();
 inspector.enable();
 // inspector.disable();
-// inspector.destory();
+
 
 /*
 inspector.on('click', function() {})

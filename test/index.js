@@ -1,0 +1,2 @@
+const inspector = new DomInspector();
+

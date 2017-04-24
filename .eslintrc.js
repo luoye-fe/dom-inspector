@@ -19,6 +19,8 @@ module.exports = {
 		'consistent-return': 0,
 		'no-param-reassign': 0,
 		'no-nested-ternary': 0,
+		'no-caller': 0,
+		'no-restricted-properties': 0,
 		semi: [2, 'always'],
 		'no-unused-vars': 0,
 		'no-unneeded-ternary': ['error', {

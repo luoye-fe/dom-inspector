@@ -1,0 +1,10 @@
+.dom-inspector {
+    position: fixed;
+    border-style: solid;
+    pointer-events: none;
+}
+
+.dom-inspector-theme-default {
+    background-color: rgba(160, 210, 255, 0.75);
+    border-color: #ffefbd;
+}

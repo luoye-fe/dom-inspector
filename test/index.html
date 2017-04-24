@@ -12,7 +12,7 @@
 
 		}
 
-		div {
+		.test {
 			background: #ff5151;
 			border: 10px solid #333;
 			margin: 20px;
@@ -24,12 +24,25 @@
 			top: 100px;
 			left: 20px;
 		}
+		/*.test:after {
+			content: 'test';
+			color: #000;
+			display: block;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			background: #ddd;
+		}*/
 	</style>
 </head>
 <body>
 	<p>这是一些测试文本</p>
 
-	<div>这是一个测试div</div>
+	<div class="test">
+		<span>这是一个测试div</span>
+	</div>
 
 	<script type="text/javascript" src="../dist/dom-inspector.js"></script>
 	<script type="text/javascript" src="./index.js"></script>

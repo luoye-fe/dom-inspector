@@ -13,13 +13,13 @@ class DomInspector {
 		this._throttleOnMove = throttle(this._onMove.bind(this), 100);
 	}
 	enable() {
-		this.overlay.style['display'] = 'block';
+		this.overlay.style.display = 'block';
 		this.root.addEventListener('mousemove', this._throttleOnMove);
 	}
 	disable() {
-		this.overlay.style['display'] = 'none';
-		this.overlay.style['width'] = 0;
-		this.overlay.style['height'] = 0;
+		this.overlay.style.display = 'none';
+		this.overlay.style.width = 0;
+		this.overlay.style.height = 0;
 		this.root.removeEventListener('mousemove', this._throttleOnMove);
 	}
 	destory() {
@@ -42,8 +42,12 @@ class DomInspector {
 	}
 	_onMove(e) {
 		const elementInfo = getElementInfo(e.target);
+		// console.log(e.target, elementInfo);
 		Object.keys(elementInfo).forEach(item => {
-			this.overlay.style[item] = elementInfo[item] + 'px';
+			if (item === 'z-index' && this.overlay.style['z-index'] <= elementInfo[item]) {
+				return (this.overlay.style[item] = elementInfo[item] + 1);
+			}
+			this.overlay.style[item] = `${elementInfo[item]}px`;
 		});
 	}
 }

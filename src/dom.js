@@ -39,12 +39,13 @@ export function getElementInfo(ele) {
 		'padding-top',
 		'padding-right',
 		'padding-bottom',
-		'padding-left'
+		'padding-left',
+		'z-index'
 	];
 
 	const computedStyle = getComputedStyle(ele);
 	requiredValue.forEach(item => {
-		result[item] = parseFloat(computedStyle[item]);
+		result[item] = parseFloat(computedStyle[item]) || 0;
 	});
 
 	mixin(result, {

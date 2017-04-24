@@ -90,11 +90,11 @@ function findPos(ele) {
  */
 function getElementInfo(ele) {
 	var result = {};
-	var requiredValue = ['border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left'];
+	var requiredValue = ['border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'z-index'];
 
 	var computedStyle = getComputedStyle(ele);
 	requiredValue.forEach(function (item) {
-		result[item] = parseFloat(computedStyle[item]);
+		result[item] = parseFloat(computedStyle[item]) || 0;
 	});
 
 	mixin(result, {
@@ -332,15 +332,15 @@ var DomInspector = function () {
 	createClass(DomInspector, [{
 		key: 'enable',
 		value: function enable() {
-			this.overlay.style['display'] = 'block';
+			this.overlay.style.display = 'block';
 			this.root.addEventListener('mousemove', this._throttleOnMove);
 		}
 	}, {
 		key: 'disable',
 		value: function disable() {
-			this.overlay.style['display'] = 'none';
-			this.overlay.style['width'] = 0;
-			this.overlay.style['height'] = 0;
+			this.overlay.style.display = 'none';
+			this.overlay.style.width = 0;
+			this.overlay.style.height = 0;
 			this.root.removeEventListener('mousemove', this._throttleOnMove);
 		}
 	}, {
@@ -371,7 +371,11 @@ var DomInspector = function () {
 			var _this = this;
 
 			var elementInfo = getElementInfo(e.target);
+			// console.log(e.target, elementInfo);
 			Object.keys(elementInfo).forEach(function (item) {
+				if (item === 'z-index' && _this.overlay.style['z-index'] <= elementInfo[item]) {
+					return _this.overlay.style[item] = elementInfo[item] + 1;
+				}
 				_this.overlay.style[item] = elementInfo[item] + 'px';
 			});
 		}

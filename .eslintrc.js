@@ -13,10 +13,13 @@ module.exports = {
 		'no-tabs': 0,
 		'import/extensions': 0,
 		'no-console': 0,
+		'arrow-parens': 0,
+		'no-underscore-dangle': 0,
 		semi: [2, 'always'],
 		'no-unused-vars': 0,
 		'no-unneeded-ternary': ['error', {
 			defaultAssignment: false
-		}]
+		}],
+		'comma-dangle': [2, 'never']
 	}
 };

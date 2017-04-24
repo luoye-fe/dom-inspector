@@ -1,11 +1,12 @@
 import './style.css';
-import { $, getElementInfo } from './dom.js';
+import { $, getElementInfo, isDOM } from './dom.js';
 import { throttle } from './utils.js';
+import logger from './logger.js';
 
 class DomInspector {
 	constructor(options = {}) {
 		this._doc = window.document;
-		this.root = typeof (options.root || 'body') === 'string' ? $((options.root || 'body')) : options.root;
+		this.root = options.root ? (isDOM(options.root) ? options.root : $(options.root)) : $('body');
 		this.theme = options.theme || 'dom-inspector-theme-default';
 		this.overlay = '';
 		this.overlayId = '';
@@ -14,7 +15,7 @@ class DomInspector {
 		this._init();
 	}
 	enable() {
-		if (this.destroyed) return console.warn('Inspector instance has been destroyed! Please redeclare it.');
+		if (this.destroyed) return logger.warn('Inspector instance has been destroyed! Please redeclare it.');
 		this.overlay.style.display = 'block';
 		this.root.addEventListener('mousemove', this._throttleOnMove);
 	}
@@ -54,6 +55,7 @@ class DomInspector {
 		return ele;
 	}
 	_onMove(e) {
+		this.target = e.target;
 		const elementInfo = getElementInfo(e.target);
 		// console.log(e.target, elementInfo);
 		Object.keys(elementInfo).forEach(item => {

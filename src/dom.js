@@ -4,6 +4,16 @@ export function $(slector) {
 	return document.documentElement.querySelector(slector);
 }
 
+export function isDOM(obj = {}) {
+	try {
+		// 现代浏览器
+		return obj instanceof HTMLElement;
+	} catch (e) {
+		// ie7+
+		return (typeof obj === "object") && (obj.nodeType === 1) && (typeof obj.style === "object") && (typeof obj.ownerDocument === "object");
+	}
+}
+
 function findPos(ele) {
 	let computedStyle = getComputedStyle(ele);
 	let _x = ele.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);

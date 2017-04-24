@@ -17,6 +17,7 @@ module.exports = {
 		'no-underscore-dangle': 0,
 		'class-methods-use-this': 0,
 		'consistent-return': 0,
+		'no-param-reassign': 0,
 		semi: [2, 'always'],
 		'no-unused-vars': 0,
 		'no-unneeded-ternary': ['error', {

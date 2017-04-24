@@ -63,48 +63,6 @@ function throttle(func) {
 	};
 }
 
-function $(slector) {
-	return document.documentElement.querySelector(slector);
-}
-
-function findPos(ele) {
-	var computedStyle = getComputedStyle(ele);
-	var _x = ele.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);
-	var _y = ele.getBoundingClientRect().top - parseFloat(computedStyle['margin-top']);
-	var el = ele.parent;
-	while (el) {
-		computedStyle = getComputedStyle(el);
-		_x += el.frameElement.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);
-		_y += el.frameElement.getBoundingClientRect().top - parseFloat(computedStyle['margin-top']);
-		el = el.parent;
-	}
-	return {
-		top: _y,
-		left: _x
-	};
-}
-
-/**
- * @param  { Dom Element }
- * @return { Object }
- */
-function getElementInfo(ele) {
-	var result = {};
-	var requiredValue = ['border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'z-index'];
-
-	var computedStyle = getComputedStyle(ele);
-	requiredValue.forEach(function (item) {
-		result[item] = parseFloat(computedStyle[item]) || 0;
-	});
-
-	mixin(result, {
-		width: ele.offsetWidth - result['border-left-width'] - result['border-right-width'] - result['padding-left'] - result['padding-right'],
-		height: ele.offsetHeight - result['border-top-width'] - result['border-bottom-width'] - result['padding-top'] - result['padding-bottom']
-	});
-	mixin(result, findPos(ele));
-	return result;
-}
-
 var asyncGenerator = function () {
   function AwaitValue(value) {
     this.value = value;
@@ -315,6 +273,50 @@ var set = function set(object, property, value, receiver) {
   return value;
 };
 
+function $(slector) {
+	return document.documentElement.querySelector(slector);
+}
+
+
+
+function findPos(ele) {
+	var computedStyle = getComputedStyle(ele);
+	var _x = ele.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);
+	var _y = ele.getBoundingClientRect().top - parseFloat(computedStyle['margin-top']);
+	var el = ele.parent;
+	while (el) {
+		computedStyle = getComputedStyle(el);
+		_x += el.frameElement.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);
+		_y += el.frameElement.getBoundingClientRect().top - parseFloat(computedStyle['margin-top']);
+		el = el.parent;
+	}
+	return {
+		top: _y,
+		left: _x
+	};
+}
+
+/**
+ * @param  { Dom Element }
+ * @return { Object }
+ */
+function getElementInfo(ele) {
+	var result = {};
+	var requiredValue = ['border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'z-index'];
+
+	var computedStyle = getComputedStyle(ele);
+	requiredValue.forEach(function (item) {
+		result[item] = parseFloat(computedStyle[item]) || 0;
+	});
+
+	mixin(result, {
+		width: ele.offsetWidth - result['border-left-width'] - result['border-right-width'] - result['padding-left'] - result['padding-right'],
+		height: ele.offsetHeight - result['border-top-width'] - result['border-bottom-width'] - result['padding-top'] - result['padding-bottom']
+	});
+	mixin(result, findPos(ele));
+	return result;
+}
+
 var DomInspector = function () {
 	function DomInspector() {
 		var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -352,6 +354,15 @@ var DomInspector = function () {
 			this.disable();
 			this.overlay.remove();
 		}
+	}, {
+		key: 'getXPath',
+		value: function getXPath(ele) {}
+	}, {
+		key: 'getCssPath',
+		value: function getCssPath(ele) {}
+	}, {
+		key: 'getSelector',
+		value: function getSelector(ele) {}
 	}, {
 		key: '_init',
 		value: function _init() {

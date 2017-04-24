@@ -29,6 +29,15 @@ class DomInspector {
 		this.disable();
 		this.overlay.remove();
 	}
+	getXPath(ele) {
+
+	}
+	getCssPath(ele) {
+
+	}
+	getSelector(ele) {
+
+	}
 	_init() {
 		this.overlayId = `dom-inspector-${Date.now()}`;
 		this.overlay = this._createElement('div', {

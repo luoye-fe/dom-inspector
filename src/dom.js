@@ -10,7 +10,7 @@ export function isDOM(obj = {}) {
 		return obj instanceof HTMLElement;
 	} catch (e) {
 		// ie7+
-		return (typeof obj === "object") && (obj.nodeType === 1) && (typeof obj.style === "object") && (typeof obj.ownerDocument === "object");
+		return (typeof obj === 'object') && (obj.nodeType === 1) && (typeof obj.style === 'object') && (typeof obj.ownerDocument === 'object');
 	}
 }
 

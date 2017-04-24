@@ -20,7 +20,7 @@ function __$styleInject(css, returnValue) {
   head.appendChild(style);
   return returnValue;
 }
-__$styleInject(".dom-inspector {\n    position: fixed;\n    border-style: solid;\n    pointer-events: none;\n}\n\n.dom-inspector-theme-default {\n    background-color: rgba(160, 210, 255, 0.75);\n    border-color: #ffefbd;\n}\n", undefined);
+__$styleInject(".dom-inspector {\r\n    position: fixed;\r\n    border-style: solid;\r\n    pointer-events: none;\r\n}\r\n\r\n.dom-inspector-theme-default {\r\n    background-color: rgba(160, 210, 255, 0.75);\r\n    border-color: #ffefbd;\r\n}\r\n", undefined);
 
 function mixin(target, source) {
 	var targetCopy = target;
@@ -63,118 +63,17 @@ function throttle(func) {
 	};
 }
 
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
 
-  function AsyncGenerator(gen) {
-    var front, back;
 
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
 
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
 
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
 
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
 
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
 
 
 
@@ -277,7 +176,17 @@ function $(slector) {
 	return document.documentElement.querySelector(slector);
 }
 
+function isDOM() {
+	var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
+	try {
+		// 现代浏览器
+		return obj instanceof HTMLElement;
+	} catch (e) {
+		// ie7+
+		return (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && obj.nodeType === 1 && _typeof(obj.style) === 'object' && _typeof(obj.ownerDocument) === 'object';
+	}
+}
 
 function findPos(ele) {
 	var computedStyle = getComputedStyle(ele);
@@ -317,13 +226,19 @@ function getElementInfo(ele) {
 	return result;
 }
 
+var logger = {
+	log: console.log,
+	warn: console.warn,
+	error: console.error
+};
+
 var DomInspector = function () {
 	function DomInspector() {
 		var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 		classCallCheck(this, DomInspector);
 
 		this._doc = window.document;
-		this.root = typeof (options.root || 'body') === 'string' ? $(options.root || 'body') : options.root;
+		this.root = options.root ? isDOM(options.root) ? options.root : $(options.root) : $('body');
 		this.theme = options.theme || 'dom-inspector-theme-default';
 		this.overlay = '';
 		this.overlayId = '';
@@ -335,7 +250,7 @@ var DomInspector = function () {
 	createClass(DomInspector, [{
 		key: 'enable',
 		value: function enable() {
-			if (this.destroyed) return console.warn('Inspector instance has been destroyed! Please redeclare it.');
+			if (this.destroyed) return logger.warn('Inspector instance has been destroyed! Please redeclare it.');
 			this.overlay.style.display = 'block';
 			this.root.addEventListener('mousemove', this._throttleOnMove);
 		}
@@ -387,6 +302,7 @@ var DomInspector = function () {
 		value: function _onMove(e) {
 			var _this = this;
 
+			this.target = e.target;
 			var elementInfo = getElementInfo(e.target);
 			// console.log(e.target, elementInfo);
 			Object.keys(elementInfo).forEach(function (item) {

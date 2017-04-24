@@ -18,6 +18,7 @@ module.exports = {
 		'class-methods-use-this': 0,
 		'consistent-return': 0,
 		'no-param-reassign': 0,
+		'no-nested-ternary': 0,
 		semi: [2, 'always'],
 		'no-unused-vars': 0,
 		'no-unneeded-ternary': ['error', {

@@ -250,8 +250,10 @@ var DomInspector = function () {
 		this.theme = options.theme || 'dom-inspector-theme-default';
 		this.overlay = {};
 		this.overlayId = '';
-		this._throttleOnMove = throttle(this._onMove.bind(this), 100);
+		this.target = '';
 		this.destroyed = false;
+		this._cachedTarget = '';
+		this._throttleOnMove = throttle(this._onMove.bind(this), 100);
 		this._init();
 	}
 
@@ -338,6 +340,8 @@ var DomInspector = function () {
 		key: '_onMove',
 		value: function _onMove(e) {
 			this.target = e.target;
+			if (this.target === this._cachedTarget) return null;
+			this._cachedTarget = this.target;
 			var elementInfo = getElementInfo(e.target);
 			var contentLevel = {
 				width: elementInfo.width,

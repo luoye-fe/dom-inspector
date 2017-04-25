@@ -10,8 +10,10 @@ class DomInspector {
 		this.theme = options.theme || 'dom-inspector-theme-default';
 		this.overlay = {};
 		this.overlayId = '';
-		this._throttleOnMove = throttle(this._onMove.bind(this), 100);
+		this.target = '';
 		this.destroyed = false;
+		this._cachedTarget = '';
+		this._throttleOnMove = throttle(this._onMove.bind(this), 100);
 		this._init();
 	}
 	enable() {
@@ -83,6 +85,8 @@ class DomInspector {
 	}
 	_onMove(e) {
 		this.target = e.target;
+		if (this.target === this._cachedTarget) return null;
+		this._cachedTarget = this.target;
 		const elementInfo = getElementInfo(e.target);
 		const contentLevel = {
 			width: elementInfo.width,

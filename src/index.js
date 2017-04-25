@@ -64,7 +64,7 @@ class DomInspector {
 			marginRight: this._createSurroundEle(parent, 'margin margin-right'),
 			marginBottom: this._createSurroundEle(parent, 'margin margin-bottom'),
 			marginLeft: this._createSurroundEle(parent, 'margin margin-left'),
-			tips: this._createSurroundEle(parent, 'tips', '<div class="tag"></div><div class="id"></div><div class="class"></div><div class="line">&nbsp;|&nbsp;</div><div class="size"></div>')
+			tips: this._createSurroundEle(parent, 'tips', '<div class="tag"></div><div class="id"></div><div class="class"></div><div class="line">&nbsp;|&nbsp;</div><div class="size"></div><div class="triangle"></div>')
 		};
 
 		$('body').appendChild(parent);
@@ -133,7 +133,15 @@ class DomInspector {
 		$('.class', this.overlay.tips).innerHTML = [...this.target.classList].map(item => `.${item}`).join('');
 		$('.size', this.overlay.tips).innerHTML = `${marginLevel.width}x${marginLevel.height}`;
 
-		addRule(this.overlay.tips, { top: `${elementInfo.top >= 24 ? (elementInfo.top - 24) : marginLevel.height + elementInfo.top}px`, left: `${elementInfo.left}px`, display: 'block' });
+		let tipsTop = 0;
+		if (elementInfo.top >= 24 + 8) {
+			this.overlay.tips.classList.remove('reverse');
+			tipsTop = elementInfo.top - 24 - 8;
+		} else {
+			this.overlay.tips.classList.add('reverse');
+			tipsTop = marginLevel.height + elementInfo.top + 8;
+		}
+		addRule(this.overlay.tips, { top: `${tipsTop}px`, left: `${elementInfo.left}px`, display: 'block' });
 	}
 }
 

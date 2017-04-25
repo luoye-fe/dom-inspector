@@ -20,7 +20,7 @@ function __$styleInject(css, returnValue) {
   head.appendChild(style);
   return returnValue;
 }
-__$styleInject(".dom-inspector {\n    position: fixed;\n    pointer-events: none;\n}\n\n.dom-inspector>div {\n\tposition: absolute;\n}\n\n.dom-inspector .tips {\n\tbackground-color: #333740;\n\tfont-size: 0;\n\tline-height: 18px;\n\tpadding: 3px 10px;\n\tposition: fixed;\n\tborder-radius: 2px;\n\tdisplay: none;\n}\n\n.dom-inspector .tips>div {\n\tdisplay: inline-block;\n\tvertical-align: middle;\n\tfont-size: 12px;\n\tfont-family: Consolas, Menlo, Monaco, Courier, monospace;\n\toverflow: auto;\n}\n\n.dom-inspector .tips .tag {\n\tcolor: #e776e0;\n}\n\n.dom-inspector .tips .id {\n\tcolor: #eba062;\n}\n\n.dom-inspector .tips .class {\n\tcolor: #8dd2fb;\n}\n\n.dom-inspector .tips .line {\n\tcolor: #fff;\n}\n\n.dom-inspector .tips .size {\n\tcolor: #fff;\n}\n\n.dom-inspector-theme-default {\n\n}\n\n.dom-inspector-theme-default .margin {\n\tbackground-color: rgba(255, 81, 81, 0.75);\n}\n\n.dom-inspector-theme-default .border {\n\tbackground-color: rgba(255, 241, 81, 0.75);\n}\n\n.dom-inspector-theme-default .padding {\n\tbackground-color: rgba(81, 255, 126, 0.75);\n}\n\n.dom-inspector-theme-default .content {\n\tbackground-color: rgba(81, 101, 255, 0.75);\n}\n", undefined);
+__$styleInject(".dom-inspector {\r\n    position: fixed;\r\n    pointer-events: none;\r\n}\r\n\r\n.dom-inspector>div {\r\n\tposition: absolute;\r\n}\r\n\r\n.dom-inspector .tips {\r\n\tbackground-color: #333740;\r\n\tfont-size: 0;\r\n\tline-height: 18px;\r\n\tpadding: 3px 10px;\r\n\tposition: fixed;\r\n\tborder-radius: 2px;\r\n\tdisplay: none;\r\n}\r\n\r\n.dom-inspector .tips.reverse{\r\n\r\n}\r\n\r\n.dom-inspector .tips .triangle {\r\n\twidth: 0;\r\n\theight: 0;\r\n\tposition: absolute;\r\n\tborder-top: 8px solid #333740;\r\n\tborder-right: 8px solid transparent;\r\n\tborder-bottom: 8px solid transparent;\r\n\tborder-left: 8px solid transparent;\r\n\tleft: 10px;\r\n\ttop: 24px;\r\n}\r\n\r\n.dom-inspector .tips.reverse .triangle {\r\n\tborder-top: 8px solid transparent;\r\n\tborder-right: 8px solid transparent;\r\n\tborder-bottom: 8px solid #333740;\r\n\tborder-left: 8px solid transparent;\r\n\tleft: 10px;\r\n\ttop: -16px;\r\n}\r\n\r\n.dom-inspector .tips>div {\r\n\tdisplay: inline-block;\r\n\tvertical-align: middle;\r\n\tfont-size: 12px;\r\n\tfont-family: Consolas, Menlo, Monaco, Courier, monospace;\r\n\toverflow: auto;\r\n}\r\n\r\n.dom-inspector .tips .tag {\r\n\tcolor: #e776e0;\r\n}\r\n\r\n.dom-inspector .tips .id {\r\n\tcolor: #eba062;\r\n}\r\n\r\n.dom-inspector .tips .class {\r\n\tcolor: #8dd2fb;\r\n}\r\n\r\n.dom-inspector .tips .line {\r\n\tcolor: #fff;\r\n}\r\n\r\n.dom-inspector .tips .size {\r\n\tcolor: #fff;\r\n}\r\n\r\n.dom-inspector-theme-default {\r\n\r\n}\r\n\r\n.dom-inspector-theme-default .margin {\r\n\tbackground-color: rgba(255, 81, 81, 0.75);\r\n}\r\n\r\n.dom-inspector-theme-default .border {\r\n\tbackground-color: rgba(255, 241, 81, 0.75);\r\n}\r\n\r\n.dom-inspector-theme-default .padding {\r\n\tbackground-color: rgba(81, 255, 126, 0.75);\r\n}\r\n\r\n.dom-inspector-theme-default .content {\r\n\tbackground-color: rgba(81, 101, 255, 0.75);\r\n}\r\n", undefined);
 
 function mixin(target, source) {
 	var targetCopy = target;
@@ -337,7 +337,7 @@ var DomInspector = function () {
 				marginRight: this._createSurroundEle(parent, 'margin margin-right'),
 				marginBottom: this._createSurroundEle(parent, 'margin margin-bottom'),
 				marginLeft: this._createSurroundEle(parent, 'margin margin-left'),
-				tips: this._createSurroundEle(parent, 'tips', '<div class="tag"></div><div class="id"></div><div class="class"></div><div class="line">&nbsp;|&nbsp;</div><div class="size"></div>')
+				tips: this._createSurroundEle(parent, 'tips', '<div class="tag"></div><div class="id"></div><div class="class"></div><div class="line">&nbsp;|&nbsp;</div><div class="size"></div><div class="triangle"></div>')
 			};
 
 			$('body').appendChild(parent);
@@ -414,7 +414,15 @@ var DomInspector = function () {
 			}).join('');
 			$('.size', this.overlay.tips).innerHTML = marginLevel.width + 'x' + marginLevel.height;
 
-			addRule(this.overlay.tips, { top: (elementInfo.top >= 24 ? elementInfo.top - 24 : marginLevel.height + elementInfo.top) + 'px', left: elementInfo.left + 'px', display: 'block' });
+			var tipsTop = 0;
+			if (elementInfo.top >= 24 + 8) {
+				this.overlay.tips.classList.remove('reverse');
+				tipsTop = elementInfo.top - 24 - 8;
+			} else {
+				this.overlay.tips.classList.add('reverse');
+				tipsTop = marginLevel.height + elementInfo.top + 8;
+			}
+			addRule(this.overlay.tips, { top: tipsTop + 'px', left: elementInfo.left + 'px', display: 'block' });
 		}
 	}]);
 	return DomInspector;

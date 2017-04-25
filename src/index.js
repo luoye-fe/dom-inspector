@@ -16,13 +16,13 @@ class DomInspector {
 	}
 	enable() {
 		if (this.destroyed) return logger.warn('Inspector instance has been destroyed! Please redeclare it.');
-		// this.overlay.style.display = 'block';
+		this.overlay.parent.style.display = 'block';
 		this.root.addEventListener('mousemove', this._throttleOnMove);
 	}
 	disable() {
-		// this.overlay.style.display = 'none';
-		// this.overlay.style.width = 0;
-		// this.overlay.style.height = 0;
+		this.overlay.parent.style.display = 'none';
+		this.overlay.parent.style.width = 0;
+		this.overlay.parent.style.height = 0;
 		this.root.removeEventListener('mousemove', this._throttleOnMove);
 	}
 	destroy() {

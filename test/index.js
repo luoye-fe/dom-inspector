@@ -11,7 +11,7 @@ inspector.enable();
 inspector.on('click', function() {})
  */
 
-// inspector.currentTarget;
+// inspector.target;
 
 // inspector.getXPath(inspector.currentTarget);
 // inspector.getCssPath(inspector.currentTarget);

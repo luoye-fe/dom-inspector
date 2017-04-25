@@ -74,5 +74,4 @@ export function getElementInfo(ele) {
 	return result;
 }
 
-
 export default $;

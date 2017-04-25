@@ -20,7 +20,7 @@ function __$styleInject(css, returnValue) {
   head.appendChild(style);
   return returnValue;
 }
-__$styleInject(".dom-inspector {\n    position: fixed;\n    pointer-events: none;\n}\n\n.dom-inspector>div {\n\tposition: absolute;\n}\n\n.dom-inspector-theme-default {\n\n}\n\n.dom-inspector-theme-default .margin {\n\tbackground-color: rgba(255, 81, 81, 0.75);\n}\n\n.dom-inspector-theme-default .border {\n\tbackground-color: rgba(255, 241, 81, 0.75);\n}\n\n.dom-inspector-theme-default .padding {\n\tbackground-color: rgba(81, 255, 126, 0.75);\n}\n\n.dom-inspector-theme-default .content {\n\tbackground-color: rgba(81, 101, 255, 0.75);\n}\n", undefined);
+__$styleInject(".dom-inspector {\n    position: fixed;\n    pointer-events: none;\n}\n\n.dom-inspector>div {\n\tposition: absolute;\n}\n\n.dom-inspector .tips {\n\tbackground-color: #333740;\n\tfont-size: 0;\n\tline-height: 18px;\n\tpadding: 3px 10px;\n\tposition: fixed;\n\tborder-radius: 2px;\n\tdisplay: none;\n}\n\n.dom-inspector .tips>div {\n\tdisplay: inline-block;\n\tvertical-align: middle;\n\tfont-size: 12px;\n\tfont-family: Consolas, Menlo, Monaco, Courier, monospace;\n}\n\n.dom-inspector .tips.reverse {\n\n}\n.dom-inspector .tips .tag {\n\tcolor: #e776e0;\n}\n\n.dom-inspector .tips .id {\n\tcolor: #eba062;\n}\n\n.dom-inspector .tips .class {\n\tcolor: #8dd2fb;\n}\n\n.dom-inspector .tips .line {\n\tcolor: #fff;\n}\n\n.dom-inspector .tips .size {\n\tcolor: #fff;\n}\n\n.dom-inspector-theme-default {\n\n}\n\n.dom-inspector-theme-default .margin {\n\tbackground-color: rgba(255, 81, 81, 0.75);\n}\n\n.dom-inspector-theme-default .border {\n\tbackground-color: rgba(255, 241, 81, 0.75);\n}\n\n.dom-inspector-theme-default .padding {\n\tbackground-color: rgba(81, 255, 126, 0.75);\n}\n\n.dom-inspector-theme-default .content {\n\tbackground-color: rgba(81, 101, 255, 0.75);\n}\n", undefined);
 
 function mixin(target, source) {
 	var targetCopy = target;
@@ -172,6 +172,30 @@ var set = function set(object, property, value, receiver) {
   return value;
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var toConsumableArray = function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
+};
+
 function isDOM() {
 	var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -312,7 +336,8 @@ var DomInspector = function () {
 				marginTop: this._createSurroundEle(parent, 'margin margin-top'),
 				marginRight: this._createSurroundEle(parent, 'margin margin-right'),
 				marginBottom: this._createSurroundEle(parent, 'margin margin-bottom'),
-				marginLeft: this._createSurroundEle(parent, 'margin margin-left')
+				marginLeft: this._createSurroundEle(parent, 'margin margin-left'),
+				tips: this._createSurroundEle(parent, 'tips', '<div class="tag"></div><div class="id"></div><div class="class"></div><div class="line">&nbsp;|&nbsp;</div><div class="size"></div>')
 			};
 
 			$('body').appendChild(parent);
@@ -329,10 +354,10 @@ var DomInspector = function () {
 		}
 	}, {
 		key: '_createSurroundEle',
-		value: function _createSurroundEle(parent, className) {
+		value: function _createSurroundEle(parent, className, content) {
 			var ele = this._createElement('div', {
 				class: className
-			});
+			}, content);
 			parent.appendChild(ele);
 			return ele;
 		}
@@ -360,6 +385,9 @@ var DomInspector = function () {
 				height: elementInfo['margin-top'] + borderLevel.height + elementInfo['margin-bottom']
 			};
 
+			// 保证 overlay 最大 z-index
+			if (this.overlay.parent.style['z-index'] <= elementInfo['z-index']) this.overlay.parent.style['z-index'] = elementInfo['z-index'] + 1;
+
 			addRule(this.overlay.parent, { width: marginLevel.width + 'px', height: marginLevel.height + 'px', top: elementInfo.top + 'px', left: elementInfo.left + 'px' });
 
 			addRule(this.overlay.content, { width: contentLevel.width + 'px', height: contentLevel.height + 'px', top: elementInfo['margin-top'] + elementInfo['border-top-width'] + elementInfo['padding-top'] + 'px', left: elementInfo['margin-left'] + elementInfo['border-left-width'] + elementInfo['padding-left'] + 'px' });
@@ -378,6 +406,15 @@ var DomInspector = function () {
 			addRule(this.overlay.marginRight, { width: elementInfo['margin-right'] + 'px', height: marginLevel.height - elementInfo['margin-top'] + 'px', top: elementInfo['margin-top'] + 'px', right: 0 });
 			addRule(this.overlay.marginBottom, { width: marginLevel.width - elementInfo['margin-right'] + 'px', height: elementInfo['margin-bottom'] + 'px', bottom: 0, right: elementInfo['margin-right'] + 'px' });
 			addRule(this.overlay.marginLeft, { width: elementInfo['margin-left'] + 'px', height: marginLevel.height - elementInfo['margin-top'] - elementInfo['margin-bottom'] + 'px', top: elementInfo['margin-top'] + 'px', left: 0 });
+
+			$('.tag', this.overlay.tips).innerHTML = this.target.tagName.toLowerCase();
+			$('.id', this.overlay.tips).innerHTML = this.target.id ? '#' + this.target.id : '';
+			$('.class', this.overlay.tips).innerHTML = [].concat(toConsumableArray(this.target.classList)).map(function (item) {
+				return '.' + item;
+			}).join('');
+			$('.size', this.overlay.tips).innerHTML = marginLevel.width + 'x' + marginLevel.height;
+
+			addRule(this.overlay.tips, { top: (elementInfo.top >= 24 ? elementInfo.top - 24 : marginLevel.height + elementInfo.top) + 'px', left: elementInfo.left + 'px', display: 'block' });
 		}
 	}]);
 	return DomInspector;

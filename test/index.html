@@ -20,7 +20,7 @@
         /*background: #c4dfb8;*/
         border-style: solid;
         border-color: transparent;
-		border-width: 10px 20px 30px 40px;
+        border-width: 10px 20px 30px 40px;
         margin: 40px 30px 20px 10px;
         padding: 10px 20px 30px 40px;
         width: 200px;
@@ -42,18 +42,6 @@
 			left: -30px;
 			background-color: #f9cc9d;
 		}*/
-    
-    .test:after {
-        content: '';
-        position: absolute;
-        z-index: -1;
-        display: block;
-        top: 30px;
-        right: 30px;
-        bottom: 30px;
-        left: 30px;
-        /*background-color: #98c5e7;*/
-    }
     
     .con {
         width: 160px;
@@ -90,7 +78,7 @@
         height: 70px;
     }
     
-    .con .content {
+    .con #content {
         background-color: black;
         position: absolute;
         top: 50%;
@@ -104,7 +92,7 @@
 
 <body>
     <p>这是一些测试文本</p>
-    <div class="test as adqwe qwe qw zxf as asd qwe dfg ert ghj t jk yui jkl uio kl wer cv rty cvb rty x qwe fb rt g df hf grt">
+    <div id="asd" class="test as adqwe qwe qw zxf as asd qwe dfg ert ghj t jk yui jkl uio kl wer cv rty cvb rty x qwe fb rt g df hf grt">
         <span>这是一个测试div</span>
     </div>
     <div class="con">
@@ -120,7 +108,38 @@
         <div class="padding-right"></div>
         <div class="padding-bottom"></div>
         <div class="padding-left"></div>
-        <div class="content"></div>
+        <div id="content"></div>
+        <div class="tips">
+            <div class="tag">div</div>
+            <div class="id">#test</div>
+            <div class="class">.a.b.c</div>
+            <div class="line">|</div>
+            <div class="size">100x100</div>
+            <div class="triangle"></div>
+        </div>
+        <code>
+        	asd
+        </code>
+        <code>
+        	asd
+        </code>
+        <code>
+        	asd
+        </code>
+        <code>
+        	asd
+        </code>
+        <code>
+        	asd
+        </code>
+		<div>123</div>
+		<div>123</div>
+		<div>123</div>
+		<div>123</div>
+		<div>123</div>
+		<div>123</div>
+		<div>123</div>
+		<div>123</div>
     </div>
     <script type="text/javascript" src="../dist/dom-inspector.js"></script>
     <script type="text/javascript" src="./index.js"></script>

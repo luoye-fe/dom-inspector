@@ -63,7 +63,8 @@ class DomInspector {
 			marginTop: this._createSurroundEle(parent, 'margin margin-top'),
 			marginRight: this._createSurroundEle(parent, 'margin margin-right'),
 			marginBottom: this._createSurroundEle(parent, 'margin margin-bottom'),
-			marginLeft: this._createSurroundEle(parent, 'margin margin-left')
+			marginLeft: this._createSurroundEle(parent, 'margin margin-left'),
+			tips: this._createSurroundEle(parent, 'tips', '<div class="tag"></div><div class="id"></div><div class="class"></div><div class="line">&nbsp;|&nbsp;</div><div class="size"></div>')
 		};
 
 		$('body').appendChild(parent);
@@ -76,10 +77,10 @@ class DomInspector {
 		if (content) ele.innerHTML = content;
 		return ele;
 	}
-	_createSurroundEle(parent, className) {
+	_createSurroundEle(parent, className, content) {
 		const ele = this._createElement('div', {
 			class: className
-		});
+		}, content);
 		parent.appendChild(ele);
 		return ele;
 	}
@@ -105,6 +106,9 @@ class DomInspector {
 			height: elementInfo['margin-top'] + borderLevel.height + elementInfo['margin-bottom']
 		};
 
+		// 保证 overlay 最大 z-index
+		if (this.overlay.parent.style['z-index'] <= elementInfo['z-index']) this.overlay.parent.style['z-index'] = elementInfo['z-index'] + 1;
+
 		addRule(this.overlay.parent, { width: `${marginLevel.width}px`, height: `${marginLevel.height}px`, top: `${elementInfo.top}px`, left: `${elementInfo.left}px` });
 
 		addRule(this.overlay.content, { width: `${contentLevel.width}px`, height: `${contentLevel.height}px`, top: `${elementInfo['margin-top'] + elementInfo['border-top-width'] + elementInfo['padding-top']}px`, left: `${elementInfo['margin-left'] + elementInfo['border-left-width'] + elementInfo['padding-left']}px` });
@@ -123,6 +127,13 @@ class DomInspector {
 		addRule(this.overlay.marginRight, { width: `${elementInfo['margin-right']}px`, height: `${marginLevel.height - elementInfo['margin-top']}px`, top: `${elementInfo['margin-top']}px`, right: 0 });
 		addRule(this.overlay.marginBottom, { width: `${marginLevel.width - elementInfo['margin-right']}px`, height: `${elementInfo['margin-bottom']}px`, bottom: 0, right: `${elementInfo['margin-right']}px` });
 		addRule(this.overlay.marginLeft, { width: `${elementInfo['margin-left']}px`, height: `${marginLevel.height - elementInfo['margin-top'] - elementInfo['margin-bottom']}px`, top: `${elementInfo['margin-top']}px`, left: 0 });
+
+		$('.tag', this.overlay.tips).innerHTML = this.target.tagName.toLowerCase();
+		$('.id', this.overlay.tips).innerHTML = this.target.id ? `#${this.target.id}` : '';
+		$('.class', this.overlay.tips).innerHTML = [...this.target.classList].map(item => `.${item}`).join('');
+		$('.size', this.overlay.tips).innerHTML = `${marginLevel.width}x${marginLevel.height}`;
+
+		addRule(this.overlay.tips, {top: `${elementInfo.top >= 24 ? (elementInfo.top - 24) : marginLevel.height + elementInfo.top}px`, left: `${elementInfo.left}px`, display: 'block'});
 	}
 }
 

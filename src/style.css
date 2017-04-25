@@ -7,6 +7,46 @@
 	position: absolute;
 }
 
+.dom-inspector .tips {
+	background-color: #333740;
+	font-size: 0;
+	line-height: 18px;
+	padding: 3px 10px;
+	position: fixed;
+	border-radius: 2px;
+	display: none;
+}
+
+.dom-inspector .tips>div {
+	display: inline-block;
+	vertical-align: middle;
+	font-size: 12px;
+	font-family: Consolas, Menlo, Monaco, Courier, monospace;
+}
+
+.dom-inspector .tips.reverse {
+
+}
+.dom-inspector .tips .tag {
+	color: #e776e0;
+}
+
+.dom-inspector .tips .id {
+	color: #eba062;
+}
+
+.dom-inspector .tips .class {
+	color: #8dd2fb;
+}
+
+.dom-inspector .tips .line {
+	color: #fff;
+}
+
+.dom-inspector .tips .size {
+	color: #fff;
+}
+
 .dom-inspector-theme-default {
 
 }

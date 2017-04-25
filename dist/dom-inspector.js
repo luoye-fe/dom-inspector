@@ -20,7 +20,7 @@ function __$styleInject(css, returnValue) {
   head.appendChild(style);
   return returnValue;
 }
-__$styleInject(".dom-inspector {\r\n    position: fixed;\r\n    border-style: solid;\r\n    pointer-events: none;\r\n}\r\n\r\n.dom-inspector:before {\r\n\tcontent: '';\r\n\tposition: absolute;\r\n\tz-index: -1;\r\n\tdisplay: block;\r\n}\r\n\r\n.dom-inspector:after {\r\n\tcontent: '';\r\n\tposition: absolute;\r\n\tz-index: -1;\r\n\tdisplay: block;\r\n}\r\n\r\n.dom-inspector-theme-default {\r\n    background-color: rgba(160, 210, 255, 0.75);\r\n    border-color: #ffeebc;\r\n}\r\n\r\n// imitate margin\r\n.dom-inspector-theme-default:before {\r\n\tbackground-color: #f9cc9d;\r\n}\r\n\r\n// imitate padding\r\n.dom-inspector-theme-default:after {\r\n\tbackground-color: #c4dfb8;\r\n}\r\n", undefined);
+__$styleInject(".dom-inspector {\n    position: fixed;\n    pointer-events: none;\n}\n\n.dom-inspector>div {\n\tposition: absolute;\n\ttop: 50%;\n\tleft: 50%;\n\ttransform: translate(-50%, -50%);\n}\n\n.dom-inspector-theme-default {\n\tbackground-color: rgba(124, 230, 149, 0.5);\n    border-color: #ffeebc;\n}\n\n.dom-inspector-theme-default .margin {\n\tbackground-color: red;\n}\n\n.dom-inspector-theme-default .border {\n\tbackground-color: green;\n}\n\n.dom-inspector-theme-default .padding {\n\tbackground-color: gray;\n}\n\n.dom-inspector-theme-default .content {\n\tbackground-color: black;\n}\n", undefined);
 
 function mixin(target, source) {
 	var targetCopy = target;
@@ -172,10 +172,6 @@ var set = function set(object, property, value, receiver) {
   return value;
 };
 
-function $(slector) {
-	return document.documentElement.querySelector(slector);
-}
-
 function isDOM() {
 	var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -187,6 +183,14 @@ function isDOM() {
 		return (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && obj.nodeType === 1 && _typeof(obj.style) === 'object' && _typeof(obj.ownerDocument) === 'object';
 	}
 }
+
+function $(selector, parent) {
+	if (!parent) return document.documentElement.querySelector(selector);
+	if (isDOM(parent)) return parent.querySelector(selector);
+	return document.documentElement.querySelector(selector);
+}
+
+
 
 function findPos(ele) {
 	var computedStyle = getComputedStyle(ele);
@@ -285,32 +289,48 @@ var DomInspector = function () {
 			this.overlay = this._createElement('div', {
 				id: this.overlayId,
 				class: 'dom-inspector ' + this.theme
-			});
+			}, '<div class="margin"></div><div class="border"></div><div class="padding"></div><div class="content"></div>');
 			$('body').appendChild(this.overlay);
 		}
 	}, {
 		key: '_createElement',
-		value: function _createElement(tag, attr) {
+		value: function _createElement(tag, attr, content) {
 			var ele = this._doc.createElement(tag);
 			Object.keys(attr).forEach(function (item) {
 				ele.setAttribute(item, attr[item]);
 			});
+			if (content) ele.innerHTML = content;
 			return ele;
 		}
 	}, {
 		key: '_onMove',
 		value: function _onMove(e) {
-			var _this = this;
-
 			this.target = e.target;
 			var elementInfo = getElementInfo(e.target);
-			// console.log(e.target, elementInfo);
-			Object.keys(elementInfo).forEach(function (item) {
-				if (item === 'z-index' && _this.overlay.style['z-index'] <= elementInfo[item]) {
-					return _this.overlay.style[item] = elementInfo[item] + 1;
-				}
-				_this.overlay.style[item] = elementInfo[item] + 'px';
-			});
+			var marginEle = $('.margin', this.overlay);
+			var borderEle = $('.border', this.overlay);
+			var paddingEle = $('.padding', this.overlay);
+			var contentEle = $('.content', this.overlay);
+
+			// 保证 overlay 最大 z-index
+			if (this.overlay.style['z-index'] <= elementInfo['z-index']) this.overlay.style['z-index'] = elementInfo['z-index'] + 1;
+
+			this.overlay.style.width = elementInfo.width + elementInfo['padding-left'] + elementInfo['padding-right'] + elementInfo['border-left-width'] + elementInfo['border-right-width'] + elementInfo['margin-left'] + elementInfo['margin-right'] + 'px';
+			this.overlay.style.height = elementInfo.height + elementInfo['padding-top'] + elementInfo['padding-bottom'] + elementInfo['border-top-width'] + elementInfo['border-bottom-width'] + elementInfo['margin-top'] + elementInfo['margin-bottom'] + 'px';
+			this.overlay.style.top = elementInfo.top + 'px';
+			this.overlay.style.left = elementInfo.left + 'px';
+
+			marginEle.style.width = elementInfo.width + elementInfo['padding-left'] + elementInfo['padding-right'] + elementInfo['border-left-width'] + elementInfo['border-right-width'] + elementInfo['margin-left'] + elementInfo['margin-right'] + 'px';
+			marginEle.style.height = elementInfo.height + elementInfo['padding-top'] + elementInfo['padding-bottom'] + elementInfo['border-top-width'] + elementInfo['border-bottom-width'] + elementInfo['margin-top'] + elementInfo['margin-bottom'] + 'px';
+
+			borderEle.style.width = elementInfo.width + elementInfo['padding-left'] + elementInfo['padding-right'] + elementInfo['border-left-width'] + elementInfo['border-right-width'] + 'px';
+			borderEle.style.height = elementInfo.height + elementInfo['padding-top'] + elementInfo['padding-bottom'] + elementInfo['border-top-width'] + elementInfo['border-bottom-width'] + 'px';
+
+			paddingEle.style.width = elementInfo.width + elementInfo['padding-left'] + elementInfo['padding-right'] + 'px';
+			paddingEle.style.height = elementInfo.height + elementInfo['padding-top'] + elementInfo['padding-bottom'] + 'px';
+
+			contentEle.style.width = elementInfo.width + 'px';
+			contentEle.style.height = elementInfo.height + 'px';
 		}
 	}]);
 	return DomInspector;

@@ -1,5 +1,5 @@
 import './style.css';
-import { $, getElementInfo, isDOM } from './dom.js';
+import { $, getElementInfo, isDOM, addRule } from './dom.js';
 import { throttle } from './utils.js';
 import logger from './logger.js';
 
@@ -44,26 +44,44 @@ class DomInspector {
 		this.overlay = this._createElement('div', {
 			id: this.overlayId,
 			class: `dom-inspector ${this.theme}`
-		});
+		}, '<div class="margin"></div><div class="border"></div><div class="padding"></div><div class="content"></div>');
 		$('body').appendChild(this.overlay);
 	}
-	_createElement(tag, attr) {
+	_createElement(tag, attr, content) {
 		const ele = this._doc.createElement(tag);
 		Object.keys(attr).forEach(item => {
 			ele.setAttribute(item, attr[item]);
 		});
+		if (content) ele.innerHTML = content;
 		return ele;
 	}
 	_onMove(e) {
 		this.target = e.target;
 		const elementInfo = getElementInfo(e.target);
-		// console.log(e.target, elementInfo);
-		Object.keys(elementInfo).forEach(item => {
-			if (item === 'z-index' && this.overlay.style['z-index'] <= elementInfo[item]) {
-				return (this.overlay.style[item] = elementInfo[item] + 1);
-			}
-			this.overlay.style[item] = `${elementInfo[item]}px`;
-		});
+		const marginEle = $('.margin', this.overlay);
+		const borderEle = $('.border', this.overlay);
+		const paddingEle = $('.padding', this.overlay);
+		const contentEle = $('.content', this.overlay);
+
+		// 保证 overlay 最大 z-index
+		if (this.overlay.style['z-index'] <= elementInfo['z-index']) this.overlay.style['z-index'] = elementInfo['z-index'] + 1;
+
+		this.overlay.style.width = `${elementInfo.width + elementInfo['padding-left'] + elementInfo['padding-right'] + elementInfo['border-left-width'] + elementInfo['border-right-width'] + elementInfo['margin-left'] + elementInfo['margin-right']}px`;
+		this.overlay.style.height = `${elementInfo.height + elementInfo['padding-top'] + elementInfo['padding-bottom'] + elementInfo['border-top-width'] + elementInfo['border-bottom-width'] + elementInfo['margin-top'] + elementInfo['margin-bottom']}px`;
+		this.overlay.style.top = `${elementInfo.top}px`;
+		this.overlay.style.left = `${elementInfo.left}px`;
+
+		marginEle.style.width = `${elementInfo.width + elementInfo['padding-left'] + elementInfo['padding-right'] + elementInfo['border-left-width'] + elementInfo['border-right-width'] + elementInfo['margin-left'] + elementInfo['margin-right']}px`;
+		marginEle.style.height = `${elementInfo.height + elementInfo['padding-top'] + elementInfo['padding-bottom'] + elementInfo['border-top-width'] + elementInfo['border-bottom-width'] + elementInfo['margin-top'] + elementInfo['margin-bottom']}px`;
+
+		borderEle.style.width = `${elementInfo.width + elementInfo['padding-left'] + elementInfo['padding-right'] + elementInfo['border-left-width'] + elementInfo['border-right-width']}px`;
+		borderEle.style.height = `${elementInfo.height + elementInfo['padding-top'] + elementInfo['padding-bottom'] + elementInfo['border-top-width'] + elementInfo['border-bottom-width']}px`;
+
+		paddingEle.style.width = `${elementInfo.width + elementInfo['padding-left'] + elementInfo['padding-right']}px`;
+		paddingEle.style.height = `${elementInfo.height + elementInfo['padding-top'] + elementInfo['padding-bottom']}px`;
+
+		contentEle.style.width = `${elementInfo.width}px`;
+		contentEle.style.height = `${elementInfo.height}px`;
 	}
 }
 

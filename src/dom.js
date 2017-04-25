@@ -1,9 +1,5 @@
 import { mixin } from './utils.js';
 
-export function $(slector) {
-	return document.documentElement.querySelector(slector);
-}
-
 export function isDOM(obj = {}) {
 	try {
 		// 现代浏览器
@@ -12,6 +8,18 @@ export function isDOM(obj = {}) {
 		// ie7+
 		return (typeof obj === 'object') && (obj.nodeType === 1) && (typeof obj.style === 'object') && (typeof obj.ownerDocument === 'object');
 	}
+}
+
+export function $(selector, parent) {
+	if (!parent) return document.documentElement.querySelector(selector);
+	if (isDOM(parent)) return parent.querySelector(selector);
+	return document.documentElement.querySelector(selector);
+}
+
+export function addRule(selector, cssObj) {
+	const sheet = document.styleSheets[0];
+	const propText = typeof cssObj === 'string' ? cssObj : Object.keys(cssObj).map(item => `${item}: ${item === 'content' ? `'${cssObj[item]}'` : cssObj[item]}`).join(';');
+	sheet.insertRule(`${selector} {${propText}}`, sheet.cssRules.length);
 }
 
 function findPos(ele) {

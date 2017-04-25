@@ -14,10 +14,10 @@
 		}
 
 		.test {
-			/*background: #ff5151;*/
+			/*background: #c4dfb8;*/
 			border: 10px solid transparent;
 			margin: 20px;
-			padding: 20px;
+			padding: 30px;
 			width: 200px;
 			height: 50px;
 			line-height: 50px;
@@ -26,17 +26,29 @@
 			left: 20px;
 			z-index: 100;
 		}
-		/*.test:after {
-			content: 'test';
-			color: #000;
-			display: block;
+	/*	.test:before {
+			content: '';
 			position: absolute;
-			width: 100%;
-			height: 100%;
-			left: 0;
-			top: 0;
-			background: #ddd;
+			z-index: -2;
+			display: block;
+			top: -30px;
+			right: -30px;
+			bottom: -30px;
+			left: -30px;
+			background-color: #f9cc9d;
 		}*/
+		.test:after {
+			content: '';
+			position: absolute;
+			z-index: -1;
+			display: block;
+			top: 30px;
+			right: 30px;
+			bottom: 30px;
+			left: 30px;
+			/*background-color: #98c5e7;*/
+		}
+
 	</style>
 </head>
 <body>

@@ -1,34 +1,32 @@
 .dom-inspector {
     position: fixed;
-    border-style: solid;
     pointer-events: none;
 }
 
-.dom-inspector:before {
-	content: '';
+.dom-inspector>div {
 	position: absolute;
-	z-index: -1;
-	display: block;
-}
-
-.dom-inspector:after {
-	content: '';
-	position: absolute;
-	z-index: -1;
-	display: block;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
 
 .dom-inspector-theme-default {
-    background-color: rgba(160, 210, 255, 0.75);
+	background-color: rgba(124, 230, 149, 0.5);
     border-color: #ffeebc;
 }
 
-// imitate margin
-.dom-inspector-theme-default:before {
-	background-color: #f9cc9d;
+.dom-inspector-theme-default .margin {
+	background-color: red;
 }
 
-// imitate padding
-.dom-inspector-theme-default:after {
-	background-color: #c4dfb8;
+.dom-inspector-theme-default .border {
+	background-color: green;
+}
+
+.dom-inspector-theme-default .padding {
+	background-color: gray;
+}
+
+.dom-inspector-theme-default .content {
+	background-color: black;
 }

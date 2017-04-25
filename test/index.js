@@ -3,7 +3,7 @@ const inspector = new DomInspector({
 });
 
 // inspector.destroy();
-// inspector.enable();
+inspector.enable();
 // inspector.disable();
 
 

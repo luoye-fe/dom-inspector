@@ -17,9 +17,9 @@ export function $(selector, parent) {
 }
 
 export function addRule(selector, cssObj) {
-	const sheet = document.styleSheets[0];
-	const propText = typeof cssObj === 'string' ? cssObj : Object.keys(cssObj).map(item => `${item}: ${item === 'content' ? `'${cssObj[item]}'` : cssObj[item]}`).join(';');
-	sheet.insertRule(`${selector} {${propText}}`, sheet.cssRules.length);
+	Object.keys(cssObj).forEach(item => {
+		selector.style[item] = cssObj[item];
+	});
 }
 
 function findPos(ele) {

@@ -8,7 +8,7 @@ class DomInspector {
 		this._doc = window.document;
 		this.root = options.root ? (isDOM(options.root) ? options.root : $(options.root)) : $('body');
 		this.theme = options.theme || 'dom-inspector-theme-default';
-		this.overlay = '';
+		this.overlay = {};
 		this.overlayId = '';
 		this._throttleOnMove = throttle(this._onMove.bind(this), 100);
 		this.destroyed = false;
@@ -16,13 +16,13 @@ class DomInspector {
 	}
 	enable() {
 		if (this.destroyed) return logger.warn('Inspector instance has been destroyed! Please redeclare it.');
-		this.overlay.style.display = 'block';
+		// this.overlay.style.display = 'block';
 		this.root.addEventListener('mousemove', this._throttleOnMove);
 	}
 	disable() {
-		this.overlay.style.display = 'none';
-		this.overlay.style.width = 0;
-		this.overlay.style.height = 0;
+		// this.overlay.style.display = 'none';
+		// this.overlay.style.width = 0;
+		// this.overlay.style.height = 0;
 		this.root.removeEventListener('mousemove', this._throttleOnMove);
 	}
 	destroy() {
@@ -41,11 +41,30 @@ class DomInspector {
 	}
 	_init() {
 		this.overlayId = `dom-inspector-${Date.now()}`;
-		this.overlay = this._createElement('div', {
+
+		const parent = this._createElement('div', {
 			id: this.overlayId,
 			class: `dom-inspector ${this.theme}`
-		}, '<div class="margin"></div><div class="border"></div><div class="padding"></div><div class="content"></div>');
-		$('body').appendChild(this.overlay);
+		});
+
+		this.overlay = {
+			parent,
+			content: this._createSurroundEle(parent, 'content'),
+			paddingTop: this._createSurroundEle(parent, 'padding padding-top'),
+			paddingRight: this._createSurroundEle(parent, 'padding padding-right'),
+			paddingBottom: this._createSurroundEle(parent, 'padding padding-bottom'),
+			paddingLeft: this._createSurroundEle(parent, 'padding padding-left'),
+			borderTop: this._createSurroundEle(parent, 'border border-top'),
+			borderRight: this._createSurroundEle(parent, 'border border-right'),
+			borderBottom: this._createSurroundEle(parent, 'border border-bottom'),
+			borderLeft: this._createSurroundEle(parent, 'border border-left'),
+			marginTop: this._createSurroundEle(parent, 'margin margin-top'),
+			marginRight: this._createSurroundEle(parent, 'margin margin-right'),
+			marginBottom: this._createSurroundEle(parent, 'margin margin-bottom'),
+			marginLeft: this._createSurroundEle(parent, 'margin margin-left')
+		};
+
+		$('body').appendChild(parent);
 	}
 	_createElement(tag, attr, content) {
 		const ele = this._doc.createElement(tag);
@@ -55,33 +74,51 @@ class DomInspector {
 		if (content) ele.innerHTML = content;
 		return ele;
 	}
+	_createSurroundEle(parent, className) {
+		const ele = this._createElement('div', {
+			class: className
+		});
+		parent.appendChild(ele);
+		return ele;
+	}
 	_onMove(e) {
 		this.target = e.target;
 		const elementInfo = getElementInfo(e.target);
-		const marginEle = $('.margin', this.overlay);
-		const borderEle = $('.border', this.overlay);
-		const paddingEle = $('.padding', this.overlay);
-		const contentEle = $('.content', this.overlay);
+		const contentLevel = {
+			width: elementInfo.width,
+			height: elementInfo.height
+		};
+		const paddingLevel = {
+			width: elementInfo['padding-left'] + contentLevel.width + elementInfo['padding-right'],
+			height: elementInfo['padding-top'] + contentLevel.height + elementInfo['padding-bottom']
+		};
+		const borderLevel = {
+			width: elementInfo['border-left-width'] + paddingLevel.width + elementInfo['border-right-width'],
+			height: elementInfo['border-top-width'] + paddingLevel.height + elementInfo['border-bottom-width']
+		};
+		const marginLevel = {
+			width: elementInfo['margin-left'] + borderLevel.width + elementInfo['margin-right'],
+			height: elementInfo['margin-top'] + borderLevel.height + elementInfo['margin-bottom']
+		};
 
-		// 保证 overlay 最大 z-index
-		if (this.overlay.style['z-index'] <= elementInfo['z-index']) this.overlay.style['z-index'] = elementInfo['z-index'] + 1;
+		addRule(this.overlay.parent, { width: `${marginLevel.width}px`, height: `${marginLevel.height}px`, top: `${elementInfo.top}px`, left: `${elementInfo.left}px` });
 
-		this.overlay.style.width = `${elementInfo.width + elementInfo['padding-left'] + elementInfo['padding-right'] + elementInfo['border-left-width'] + elementInfo['border-right-width'] + elementInfo['margin-left'] + elementInfo['margin-right']}px`;
-		this.overlay.style.height = `${elementInfo.height + elementInfo['padding-top'] + elementInfo['padding-bottom'] + elementInfo['border-top-width'] + elementInfo['border-bottom-width'] + elementInfo['margin-top'] + elementInfo['margin-bottom']}px`;
-		this.overlay.style.top = `${elementInfo.top}px`;
-		this.overlay.style.left = `${elementInfo.left}px`;
+		addRule(this.overlay.content, { width: `${contentLevel.width}px`, height: `${contentLevel.height}px`, top: `${elementInfo['margin-top'] + elementInfo['border-top-width'] + elementInfo['padding-top']}px`, left: `${elementInfo['margin-left'] + elementInfo['border-left-width'] + elementInfo['padding-left']}px` });
 
-		marginEle.style.width = `${elementInfo.width + elementInfo['padding-left'] + elementInfo['padding-right'] + elementInfo['border-left-width'] + elementInfo['border-right-width'] + elementInfo['margin-left'] + elementInfo['margin-right']}px`;
-		marginEle.style.height = `${elementInfo.height + elementInfo['padding-top'] + elementInfo['padding-bottom'] + elementInfo['border-top-width'] + elementInfo['border-bottom-width'] + elementInfo['margin-top'] + elementInfo['margin-bottom']}px`;
+		addRule(this.overlay.paddingTop, { width: `${paddingLevel.width}px`, height: `${elementInfo['padding-top']}px`, top: `${elementInfo['margin-top'] + elementInfo['border-top-width']}px`, left: `${elementInfo['margin-left'] + elementInfo['border-left-width']}px` });
+		addRule(this.overlay.paddingRight, { width: `${elementInfo['padding-right']}px`, height: `${paddingLevel.height - elementInfo['padding-top']}px`, top: `${elementInfo['padding-top'] + elementInfo['margin-top'] + elementInfo['border-top-width']}px`, right: `${elementInfo['margin-right'] + elementInfo['border-right-width']}px` });
+		addRule(this.overlay.paddingBottom, { width: `${paddingLevel.width - elementInfo['padding-right']}px`, height: `${elementInfo['padding-bottom']}px`, bottom: `${elementInfo['margin-bottom'] + elementInfo['border-bottom-width']}px`, right: `${elementInfo['padding-right'] + elementInfo['margin-right'] + elementInfo['border-right-width']}px` });
+		addRule(this.overlay.paddingLeft, { width: `${elementInfo['padding-left']}px`, height: `${paddingLevel.height - elementInfo['padding-top'] - elementInfo['padding-bottom']}px`, top: `${elementInfo['padding-top'] + elementInfo['margin-top'] + elementInfo['border-top-width']}px`, left: `${elementInfo['margin-left'] + elementInfo['border-left-width']}px` });
 
-		borderEle.style.width = `${elementInfo.width + elementInfo['padding-left'] + elementInfo['padding-right'] + elementInfo['border-left-width'] + elementInfo['border-right-width']}px`;
-		borderEle.style.height = `${elementInfo.height + elementInfo['padding-top'] + elementInfo['padding-bottom'] + elementInfo['border-top-width'] + elementInfo['border-bottom-width']}px`;
+		addRule(this.overlay.borderTop, { width: `${borderLevel.width}px`, height: `${elementInfo['border-top-width']}px`, top: `${elementInfo['margin-top']}px`, left: `${elementInfo['margin-left']}px` });
+		addRule(this.overlay.borderRight, { width: `${elementInfo['border-right-width']}px`, height: `${borderLevel.height - elementInfo['border-top-width']}px`, top: `${elementInfo['margin-top'] + elementInfo['border-top-width']}px`, right: `${elementInfo['margin-right']}px` });
+		addRule(this.overlay.borderBottom, { width: `${borderLevel.width - elementInfo['border-right-width']}px`, height: `${elementInfo['border-bottom-width']}px`, bottom: `${elementInfo['margin-bottom']}px`, right: `${elementInfo['margin-right'] + elementInfo['border-right-width']}px` });
+		addRule(this.overlay.borderLeft, { width: `${elementInfo['border-left-width']}px`, height: `${borderLevel.height - elementInfo['border-top-width'] - elementInfo['border-bottom-width']}px`, top: `${elementInfo['margin-top'] + elementInfo['border-top-width']}px`, left: `${elementInfo['margin-left']}px` });
 
-		paddingEle.style.width = `${elementInfo.width + elementInfo['padding-left'] + elementInfo['padding-right']}px`;
-		paddingEle.style.height = `${elementInfo.height + elementInfo['padding-top'] + elementInfo['padding-bottom']}px`;
-
-		contentEle.style.width = `${elementInfo.width}px`;
-		contentEle.style.height = `${elementInfo.height}px`;
+		addRule(this.overlay.marginTop, { width: `${marginLevel.width}px`, height: `${elementInfo['margin-top']}px`, top: 0, left: 0 });
+		addRule(this.overlay.marginRight, { width: `${elementInfo['margin-right']}px`, height: `${marginLevel.height - elementInfo['margin-top']}px`, top: `${elementInfo['margin-top']}px`, right: 0 });
+		addRule(this.overlay.marginBottom, { width: `${marginLevel.width - elementInfo['margin-right']}px`, height: `${elementInfo['margin-bottom']}px`, bottom: 0, right: `${elementInfo['margin-right']}px` });
+		addRule(this.overlay.marginLeft, { width: `${elementInfo['margin-left']}px`, height: `${marginLevel.height - elementInfo['margin-top'] - elementInfo['margin-bottom']}px`, top: `${elementInfo['margin-top']}px`, left: 0 });
 	}
 }
 

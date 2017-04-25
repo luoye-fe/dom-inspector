@@ -5,28 +5,24 @@
 
 .dom-inspector>div {
 	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
 }
 
 .dom-inspector-theme-default {
-	background-color: rgba(124, 230, 149, 0.5);
-    border-color: #ffeebc;
+
 }
 
 .dom-inspector-theme-default .margin {
-	background-color: red;
+	background-color: rgba(255, 81, 81, 0.75);
 }
 
 .dom-inspector-theme-default .border {
-	background-color: green;
+	background-color: rgba(255, 241, 81, 0.75);
 }
 
 .dom-inspector-theme-default .padding {
-	background-color: gray;
+	background-color: rgba(81, 255, 126, 0.75);
 }
 
 .dom-inspector-theme-default .content {
-	background-color: black;
+	background-color: rgba(81, 101, 255, 0.75);
 }

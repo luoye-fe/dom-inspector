@@ -22,11 +22,9 @@
 	vertical-align: middle;
 	font-size: 12px;
 	font-family: Consolas, Menlo, Monaco, Courier, monospace;
+	overflow: auto;
 }
 
-.dom-inspector .tips.reverse {
-
-}
 .dom-inspector .tips .tag {
 	color: #e776e0;
 }

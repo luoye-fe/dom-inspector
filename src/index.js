@@ -133,7 +133,7 @@ class DomInspector {
 		$('.class', this.overlay.tips).innerHTML = [...this.target.classList].map(item => `.${item}`).join('');
 		$('.size', this.overlay.tips).innerHTML = `${marginLevel.width}x${marginLevel.height}`;
 
-		addRule(this.overlay.tips, {top: `${elementInfo.top >= 24 ? (elementInfo.top - 24) : marginLevel.height + elementInfo.top}px`, left: `${elementInfo.left}px`, display: 'block'});
+		addRule(this.overlay.tips, { top: `${elementInfo.top >= 24 ? (elementInfo.top - 24) : marginLevel.height + elementInfo.top}px`, left: `${elementInfo.left}px`, display: 'block' });
 	}
 }
 

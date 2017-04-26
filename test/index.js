@@ -4,6 +4,7 @@ const inspector = new DomInspector({
 
 // inspector.destroy();
 inspector.enable();
+// inspector.getElementInfo();
 // inspector.disable();
 
 

@@ -42,6 +42,10 @@ class DomInspector {
 	getSelector(ele) {
 
 	}
+	getElementInfo(ele) {
+		if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getElementInfo', 'color: #ff5151');
+		return getElementInfo(ele || this.target);
+	}
 	_init() {
 		this.overlayId = `dom-inspector-${Date.now()}`;
 

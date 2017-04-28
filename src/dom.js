@@ -1,13 +1,7 @@
 import { mixin } from './utils.js';
 
 export function isDOM(obj = {}) {
-	try {
-		// 现代浏览器
-		return obj instanceof HTMLElement;
-	} catch (e) {
-		// ie7+
-		return (typeof obj === 'object') && (obj.nodeType === 1) && (typeof obj.style === 'object') && (typeof obj.ownerDocument === 'object');
-	}
+	return obj instanceof HTMLElement;
 }
 
 export function $(selector, parent) {

@@ -63,21 +63,67 @@ function throttle(func) {
 	};
 }
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+function isDOM() {
+	var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+	return obj instanceof HTMLElement;
+}
+
+function $(selector, parent) {
+	if (!parent) return document.documentElement.querySelector(selector);
+	if (isDOM(parent)) return parent.querySelector(selector);
+	return document.documentElement.querySelector(selector);
+}
+
+function addRule(selector, cssObj) {
+	Object.keys(cssObj).forEach(function (item) {
+		selector.style[item] = cssObj[item];
+	});
+}
+
+function findPos(ele) {
+	var computedStyle = getComputedStyle(ele);
+	var _x = ele.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);
+	var _y = ele.getBoundingClientRect().top - parseFloat(computedStyle['margin-top']);
+	var el = ele.parent;
+	while (el) {
+		computedStyle = getComputedStyle(el);
+		_x += el.frameElement.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);
+		_y += el.frameElement.getBoundingClientRect().top - parseFloat(computedStyle['margin-top']);
+		el = el.parent;
+	}
+	return {
+		top: _y,
+		left: _x
+	};
+}
+
+/**
+ * @param  { Dom Element }
+ * @return { Object }
+ */
+function getElementInfo$1(ele) {
+	var result = {};
+	var requiredValue = ['border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'z-index'];
+
+	var computedStyle = getComputedStyle(ele);
+	requiredValue.forEach(function (item) {
+		result[item] = parseFloat(computedStyle[item]) || 0;
+	});
+
+	mixin(result, {
+		width: ele.offsetWidth - result['border-left-width'] - result['border-right-width'] - result['padding-left'] - result['padding-right'],
+		height: ele.offsetHeight - result['border-top-width'] - result['border-bottom-width'] - result['padding-top'] - result['padding-bottom']
+	});
+	mixin(result, findPos(ele));
+	return result;
+}
+
+var logger = {
+	log: console.log,
+	warn: console.warn,
+	error: console.error
 };
-
-
-
-
-
-
-
-
-
-
 
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -194,74 +240,6 @@ var toConsumableArray = function (arr) {
   } else {
     return Array.from(arr);
   }
-};
-
-function isDOM() {
-	var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-	try {
-		// 现代浏览器
-		return obj instanceof HTMLElement;
-	} catch (e) {
-		// ie7+
-		return (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && obj.nodeType === 1 && _typeof(obj.style) === 'object' && _typeof(obj.ownerDocument) === 'object';
-	}
-}
-
-function $(selector, parent) {
-	if (!parent) return document.documentElement.querySelector(selector);
-	if (isDOM(parent)) return parent.querySelector(selector);
-	return document.documentElement.querySelector(selector);
-}
-
-function addRule(selector, cssObj) {
-	Object.keys(cssObj).forEach(function (item) {
-		selector.style[item] = cssObj[item];
-	});
-}
-
-function findPos(ele) {
-	var computedStyle = getComputedStyle(ele);
-	var _x = ele.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);
-	var _y = ele.getBoundingClientRect().top - parseFloat(computedStyle['margin-top']);
-	var el = ele.parent;
-	while (el) {
-		computedStyle = getComputedStyle(el);
-		_x += el.frameElement.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);
-		_y += el.frameElement.getBoundingClientRect().top - parseFloat(computedStyle['margin-top']);
-		el = el.parent;
-	}
-	return {
-		top: _y,
-		left: _x
-	};
-}
-
-/**
- * @param  { Dom Element }
- * @return { Object }
- */
-function getElementInfo$1(ele) {
-	var result = {};
-	var requiredValue = ['border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'z-index'];
-
-	var computedStyle = getComputedStyle(ele);
-	requiredValue.forEach(function (item) {
-		result[item] = parseFloat(computedStyle[item]) || 0;
-	});
-
-	mixin(result, {
-		width: ele.offsetWidth - result['border-left-width'] - result['border-right-width'] - result['padding-left'] - result['padding-right'],
-		height: ele.offsetHeight - result['border-top-width'] - result['border-bottom-width'] - result['padding-top'] - result['padding-bottom']
-	});
-	mixin(result, findPos(ele));
-	return result;
-}
-
-var logger = {
-	log: console.log,
-	warn: console.warn,
-	error: console.error
 };
 
 var DomInspector = function () {

@@ -267,6 +267,11 @@ var DomInspector = function () {
 			this.root.addEventListener('mousemove', this._throttleOnMove);
 		}
 	}, {
+		key: 'pause',
+		value: function pause() {
+			this.root.removeEventListener('mousemove', this._throttleOnMove);
+		}
+	}, {
 		key: 'disable',
 		value: function disable() {
 			this.overlay.parent.style.display = 'none';

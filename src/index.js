@@ -21,6 +21,9 @@ class DomInspector {
 		this.overlay.parent.style.display = 'block';
 		this.root.addEventListener('mousemove', this._throttleOnMove);
 	}
+	pause() {
+		this.root.removeEventListener('mousemove', this._throttleOnMove);
+	}
 	disable() {
 		this.overlay.parent.style.display = 'none';
 		this.overlay.parent.style.width = 0;

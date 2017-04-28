@@ -38,6 +38,22 @@ class DomInspector {
 	}
 	getCssPath(ele) {
 		if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getCssPath', 'color: #ff5151');
+		var path = [];
+		while (ele.nodeType === Node.ELEMENT_NODE) {
+			console.log(ele);
+			var selector = ele.nodeName.toLowerCase();
+			if (ele.id) {
+				selector += `#${ele.id}`;
+			} else {
+				var sib = ele,
+					nth = 1;
+				while (sib.nodeType === Node.ELEMENT_NODE && (sib = sib.previousSibling) && nth++);
+				selector += `:nth-child(${nth})`;
+			}
+			path.unshift(selector);
+			ele = ele.parentNode;
+		}
+		return path.join('> ');
 	}
 	getSelector(ele) {
 		if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getSelector', 'color: #ff5151');

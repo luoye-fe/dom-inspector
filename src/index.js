@@ -38,22 +38,23 @@ class DomInspector {
 	}
 	getCssPath(ele) {
 		if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getCssPath', 'color: #ff5151');
-		var path = [];
+		const path = [];
 		while (ele.nodeType === Node.ELEMENT_NODE) {
-			console.log(ele);
-			var selector = ele.nodeName.toLowerCase();
+			let currentSelector = ele.nodeName.toLowerCase();
 			if (ele.id) {
-				selector += `#${ele.id}`;
+				currentSelector += `#${ele.id}`;
 			} else {
-				var sib = ele,
-					nth = 1;
-				while (sib.nodeType === Node.ELEMENT_NODE && (sib = sib.previousSibling) && nth++);
-				selector += `:nth-child(${nth})`;
+				let sib = ele;
+				let nth = 1;
+				while (sib = sib.previousElementSibling) {
+					if (sib.nodeName.toLowerCase() === currentSelector) nth += 1;
+				}
+				if (nth !== 1) currentSelector += `:nth-of-type(${nth})`;
 			}
-			path.unshift(selector);
+			path.unshift(currentSelector);
 			ele = ele.parentNode;
 		}
-		return path.join('> ');
+		return path.join('>');
 	}
 	getSelector(ele) {
 		if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getSelector', 'color: #ff5151');

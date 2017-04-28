@@ -17,3 +17,4 @@ inspector.on('click', function() {})
 // inspector.getXPath(inspector.currentTarget);
 // inspector.getCssPath(inspector.currentTarget);
 // inspector.getSelector(inspector.currentTarget);
+// inspector.getElementInfo(inspector.currentTarget);

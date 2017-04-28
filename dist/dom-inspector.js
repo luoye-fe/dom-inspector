@@ -303,9 +303,10 @@ var DomInspector = function () {
 					currentSelector += '#' + ele.id;
 				} else {
 					var sib = ele;
-					var nth = 1;
-					while (sib = sib.previousElementSibling) {
+					var nth = 0;
+					while (sib) {
 						if (sib.nodeName.toLowerCase() === currentSelector) nth += 1;
+						sib = sib.previousElementSibling;
 					}
 					if (nth !== 1) currentSelector += ':nth-of-type(' + nth + ')';
 				}

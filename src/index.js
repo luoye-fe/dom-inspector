@@ -1,6 +1,6 @@
 import './style.css';
 import { $, getElementInfo, isDOM, addRule } from './dom.js';
-import { throttle } from './utils.js';
+import { throttle, isNull } from './utils.js';
 import logger from './logger.js';
 
 class DomInspector {
@@ -48,9 +48,10 @@ class DomInspector {
 				currentSelector += `#${ele.id}`;
 			} else {
 				let sib = ele;
-				let nth = 1;
-				while (sib = sib.previousElementSibling) {
+				let nth = 0;
+				while (sib) {
 					if (sib.nodeName.toLowerCase() === currentSelector) nth += 1;
+					sib = sib.previousElementSibling;
 				}
 				if (nth !== 1) currentSelector += `:nth-of-type(${nth})`;
 			}

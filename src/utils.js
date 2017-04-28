@@ -33,4 +33,8 @@ export function throttle(func, wait = 100) {
 	};
 }
 
+export function isNull(obj) {
+	return Object.prototype.toString.call(obj).replace(/\[object[\s]/, '').replace(']', '').toLowerCase() === 'null';
+}
+
 export default null;

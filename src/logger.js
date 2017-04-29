@@ -6,8 +6,7 @@ const exportObj = {};
 
 proxy.forEach(item => {
 	exportObj[item] = function (...args) {
-		const restArgs = [...args].pop();
-		return console[item].call(this, args[0], restArgs);
+		return console[item].call(this, args[0], args[1] || '');
 	};
 });
 

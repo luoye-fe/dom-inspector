@@ -1,5 +1,5 @@
 const inspector = new DomInspector({
-	root: 'html'
+	root: '#asdfd'
 });
 
 // inspector.destroy();

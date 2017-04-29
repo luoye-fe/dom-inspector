@@ -7,6 +7,10 @@ class DomInspector {
 	constructor(options = {}) {
 		this._doc = window.document;
 		this.root = options.root ? (isDOM(options.root) ? options.root : $(options.root)) : $('body');
+		if (isNull(this.root)) {
+			logger.warn('Root element is null. Auto select body as root');
+			this.root = $('body');
+		};
 		this.theme = options.theme || 'dom-inspector-theme-default';
 		this.overlay = {};
 		this.overlayId = '';

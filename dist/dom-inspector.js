@@ -70,9 +70,9 @@ function isDOM() {
 }
 
 function $(selector, parent) {
-	if (!parent) return document.documentElement.querySelector(selector);
+	if (!parent) return document.querySelector(selector);
 	if (isDOM(parent)) return parent.querySelector(selector);
-	return document.documentElement.querySelector(selector);
+	return document.querySelector(selector);
 }
 
 function addRule(selector, cssObj) {

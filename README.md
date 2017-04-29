@@ -1,5 +1,7 @@
 DomInspector
 --------------------------------
 
-Dom inspect like chrome dev tools.
+Dom inspector like chrome dev tools.
+
+![](./document/dom-inspector.gif)
 

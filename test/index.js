@@ -1,5 +1,5 @@
 const inspector = new DomInspector({
-	theme: 'dom-inspector-theme-default'
+	root: 'html'
 });
 
 // inspector.destroy();

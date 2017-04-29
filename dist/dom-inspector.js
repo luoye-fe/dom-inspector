@@ -123,11 +123,15 @@ function getElementInfo$1(ele) {
 	return result;
 }
 
-var logger = {
-	log: console.log,
-	warn: console.warn,
-	error: console.error
-};
+var proxy = ['log', 'warn', 'error'];
+
+var exportObj = {};
+
+proxy.forEach(function (item) {
+	exportObj[item] = function () {
+		return console[item].call(this, arguments.length <= 0 ? undefined : arguments[0], (arguments.length <= 1 ? undefined : arguments[1]) || '');
+	};
+});
 
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -254,7 +258,7 @@ var DomInspector = function () {
 		this._doc = window.document;
 		this.root = options.root ? isDOM(options.root) ? options.root : $(options.root) : $('body');
 		if (isNull(this.root)) {
-			logger.warn('Root element is null. Auto select body as root');
+			exportObj.warn('Root element is null. Auto select body as root');
 			this.root = $('body');
 		}
 		this.theme = options.theme || 'dom-inspector-theme-default';
@@ -270,7 +274,7 @@ var DomInspector = function () {
 	createClass(DomInspector, [{
 		key: 'enable',
 		value: function enable() {
-			if (this.destroyed) return logger.warn('Inspector instance has been destroyed! Please redeclare it.');
+			if (this.destroyed) return exportObj.warn('Inspector instance has been destroyed! Please redeclare it.');
 			this.overlay.parent.style.display = 'block';
 			this.root.addEventListener('mousemove', this._throttleOnMove);
 		}
@@ -298,12 +302,12 @@ var DomInspector = function () {
 	}, {
 		key: 'getXPath',
 		value: function getXPath(ele) {
-			if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getXPath', 'color: #ff5151');
+			if (!isDOM(ele) && !this.target) return exportObj.warn('Target element is not found. Warning function name:%c getXPath', 'color: #ff5151');
 		}
 	}, {
 		key: 'getCssPath',
 		value: function getCssPath(ele) {
-			if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getCssPath', 'color: #ff5151');
+			if (!isDOM(ele) && !this.target) return exportObj.warn('Target element is not found. Warning function name:%c getCssPath', 'color: #ff5151');
 			var path = [];
 			while (ele.nodeType === Node.ELEMENT_NODE) {
 				var currentSelector = ele.nodeName.toLowerCase();
@@ -326,12 +330,12 @@ var DomInspector = function () {
 	}, {
 		key: 'getSelector',
 		value: function getSelector(ele) {
-			if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getSelector', 'color: #ff5151');
+			if (!isDOM(ele) && !this.target) return exportObj.warn('Target element is not found. Warning function name:%c getSelector', 'color: #ff5151');
 		}
 	}, {
 		key: 'getElementInfo',
 		value: function getElementInfo(ele) {
-			if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getElementInfo', 'color: #ff5151');
+			if (!isDOM(ele) && !this.target) return exportObj.warn('Target element is not found. Warning function name:%c getElementInfo', 'color: #ff5151');
 			return getElementInfo$1(ele || this.target);
 		}
 	}, {

@@ -42,10 +42,12 @@ class DomInspector {
 	}
 	getXPath(ele) {
 		if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getXPath', 'color: #ff5151');
+		if (!ele) ele = this.target;
 	}
 	getCssPath(ele) {
 		if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getCssPath', 'color: #ff5151');
 		const path = [];
+		if (!ele) ele = this.target;
 		while (ele.nodeType === Node.ELEMENT_NODE) {
 			let currentSelector = ele.nodeName.toLowerCase();
 			if (ele.id) {
@@ -66,6 +68,7 @@ class DomInspector {
 	}
 	getSelector(ele) {
 		if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getSelector', 'color: #ff5151');
+		if (!ele) ele = this.target;
 	}
 	getElementInfo(ele) {
 		if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getElementInfo', 'color: #ff5151');

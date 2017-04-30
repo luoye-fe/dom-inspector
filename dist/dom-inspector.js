@@ -303,12 +303,14 @@ var DomInspector = function () {
 		key: 'getXPath',
 		value: function getXPath(ele) {
 			if (!isDOM(ele) && !this.target) return exportObj.warn('Target element is not found. Warning function name:%c getXPath', 'color: #ff5151');
+			if (!ele) ele = this.target;
 		}
 	}, {
 		key: 'getCssPath',
 		value: function getCssPath(ele) {
 			if (!isDOM(ele) && !this.target) return exportObj.warn('Target element is not found. Warning function name:%c getCssPath', 'color: #ff5151');
 			var path = [];
+			if (!ele) ele = this.target;
 			while (ele.nodeType === Node.ELEMENT_NODE) {
 				var currentSelector = ele.nodeName.toLowerCase();
 				if (ele.id) {
@@ -331,6 +333,7 @@ var DomInspector = function () {
 		key: 'getSelector',
 		value: function getSelector(ele) {
 			if (!isDOM(ele) && !this.target) return exportObj.warn('Target element is not found. Warning function name:%c getSelector', 'color: #ff5151');
+			if (!ele) ele = this.target;
 		}
 	}, {
 		key: 'getElementInfo',

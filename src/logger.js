@@ -5,7 +5,7 @@ const proxy = ['log', 'warn', 'error'];
 const exportObj = {};
 
 proxy.forEach(item => {
-	exportObj[item] = function (...args) {
+	exportObj[item] = function funcName(...args) {
 		return console[item].call(this, args[0], args[1] || '');
 	};
 });

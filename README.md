@@ -93,15 +93,11 @@ const inspector = new DomInspector({
 
 	Return ele XPath.
 
-* `inspector.getCssPath([ele])`
-
-	Return ele css path use `nth-of-type`.
-
-	`html>body>div:nth-of-type(9)`
-
 * `inspector.getSelector([ele])`
 
 	Return ele selector.
+	
+	`html>body>div:nth-of-type(9)`
 
 * `inspector.getElementInfo([ele])`
 

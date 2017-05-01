@@ -7,11 +7,6 @@ inspector.enable();
 // inspector.getElementInfo();
 // inspector.disable();
 
-
-/*
-inspector.on('click', function() {})
- */
-
 // inspector.target;
 
 // inspector.getXPath(inspector.target);

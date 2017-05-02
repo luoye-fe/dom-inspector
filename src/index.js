@@ -43,11 +43,32 @@ class DomInspector {
 	getXPath(ele) {
 		if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getXPath', 'color: #ff5151');
 		if (!ele) ele = this.target;
+
+		if (ele.hasAttribute('id')) {
+			return `//${ele.tagName}[@id="${ele.id}""]`;
+		}
+
+		function getElementIdx(ele) {
+			let count = 1;
+			for (let sib = ele.previousSibling; sib; sib = sib.previousSibling) {
+				if (sib.nodeType === 1 && sib.tagName === ele.tagName) count += 1;
+			}
+			return count;
+		}
+
+		let path = '';
+		for (; ele && ele.nodeType === 1; ele = ele.parentNode) {
+			const idx = getElementIdx(ele);
+			let xname = ele.tagName;
+			if (idx > 1) xname += `[${idx}]`;
+			path = `/${xname}${path}`;
+		}
+		return path;
 	}
 	getSelector(ele) {
 		if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getCssPath', 'color: #ff5151');
-		const path = [];
 		if (!ele) ele = this.target;
+		const path = [];
 		while (ele.nodeType === Node.ELEMENT_NODE) {
 			let currentSelector = ele.nodeName.toLowerCase();
 			if (ele.id) {

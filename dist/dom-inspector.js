@@ -85,6 +85,15 @@ function addRule(selector, cssObj) {
 	});
 }
 
+function findIndex(ele, currentTag) {
+	var nth = 0;
+	while (ele) {
+		if (ele.nodeName.toLowerCase() === currentTag) nth += 1;
+		ele = ele.previousElementSibling;
+	}
+	return nth;
+}
+
 function findPos(ele) {
 	var computedStyle = getComputedStyle(ele);
 	var _x = ele.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);
@@ -308,25 +317,21 @@ var DomInspector = function () {
 			if (!ele) ele = this.target;
 
 			if (ele.hasAttribute('id')) {
-				return '//' + ele.tagName + '[@id="' + ele.id + '""]';
+				return '//' + ele.tagName.toLowerCase() + '[@id="' + ele.id + '"]';
 			}
 
-			function getElementIdx(ele) {
-				var count = 1;
-				for (var sib = ele.previousSibling; sib; sib = sib.previousSibling) {
-					if (sib.nodeType === 1 && sib.tagName === ele.tagName) count += 1;
-				}
-				return count;
+			if (ele.hasAttribute('class')) {
+				return '//' + ele.tagName.toLowerCase() + '[@class="' + ele.getAttribute('class') + '"]';
 			}
 
-			var path = '';
-			for (; ele && ele.nodeType === 1; ele = ele.parentNode) {
-				var idx = getElementIdx(ele);
-				var xname = ele.tagName;
-				if (idx > 1) xname += '[' + idx + ']';
-				path = '/' + xname + path;
+			var path = [];
+			while (ele.nodeType === Node.ELEMENT_NODE) {
+				var currentTag = ele.nodeName.toLowerCase();
+				var nth = findIndex(ele, currentTag);
+				path.push('' + ele.tagName.toLowerCase() + (nth === 1 ? '' : '[' + nth + ']'));
+				ele = ele.parentNode;
 			}
-			return path;
+			return '/' + path.reverse().join('/');
 		}
 	}, {
 		key: 'getSelector',
@@ -336,15 +341,10 @@ var DomInspector = function () {
 			var path = [];
 			while (ele.nodeType === Node.ELEMENT_NODE) {
 				var currentSelector = ele.nodeName.toLowerCase();
-				if (ele.id) {
+				if (ele.hasAttribute('id')) {
 					currentSelector += '#' + ele.id;
 				} else {
-					var sib = ele;
-					var nth = 0;
-					while (sib) {
-						if (sib.nodeName.toLowerCase() === currentSelector) nth += 1;
-						sib = sib.previousElementSibling;
-					}
+					var nth = findIndex(ele, currentSelector);
 					if (nth !== 1) currentSelector += ':nth-of-type(' + nth + ')';
 				}
 				path.unshift(currentSelector);

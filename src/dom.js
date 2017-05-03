@@ -16,6 +16,15 @@ export function addRule(selector, cssObj) {
 	});
 }
 
+export function findIndex(ele, currentTag) {
+	let nth = 0;
+	while (ele) {
+		if (ele.nodeName.toLowerCase() === currentTag) nth += 1;
+		ele = ele.previousElementSibling;
+	}
+	return nth;
+}
+
 function findPos(ele) {
 	let computedStyle = getComputedStyle(ele);
 	let _x = ele.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);

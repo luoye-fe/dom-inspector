@@ -7,7 +7,11 @@ Dom inspector like chrome dev tools.
 
 ## Usage
 
-#### Import `dom-inspector.js`
+#### Install `dom-inspector`
+
+```bash
+npm install dom-inspector --save
+```
 
 ```html
 <script type="text/javascript" src="./dist/dom-inspector.min.js"></script>

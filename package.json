@@ -1,6 +1,6 @@
 {
 	"name": "dom-inspector",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "dom inspect like chrom dev tools.",
 	"author": "luoye <luoyefe@gmail.com>",
 	"main": "dist/dom-inspector.min.js",

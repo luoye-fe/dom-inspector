@@ -10,7 +10,7 @@ Dom inspector like chrome dev tools.
 #### Import `dom-inspector.js`
 
 ```html
-<script type="text/javascript" src="magicss.min.js"></script>
+<script type="text/javascript" src="./dist/dom-inspector.min.js"></script>
 ```
 
 ```js

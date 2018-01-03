@@ -34,7 +34,7 @@
 		"chrome",
 		"dev-tool"
 	],
-	"license": "ISC",
+	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/luoye-fe/dom-inspector/issues"
 	},

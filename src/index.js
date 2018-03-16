@@ -38,7 +38,7 @@ class DomInspector {
 	destroy() {
 		this.destroyed = true;
 		this.disable();
-		this.overlay.remove();
+		this.overlay = {};
 	}
 	getXPath(ele) {
 		if (!isDOM(ele) && !this.target) return logger.warn('Target element is not found. Warning function name:%c getXPath', 'color: #ff5151');

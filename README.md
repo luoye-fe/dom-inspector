@@ -89,7 +89,7 @@ const inspector = new DomInspector({
 
 	RemoveEventListener `mousemove`, display overlay `none`.
 
-* `inspector.destory()`
+* `inspector.destroy()`
 
 	`disable()` and remove overlay.
 

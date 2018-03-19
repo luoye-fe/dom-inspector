@@ -1,3 +1,7 @@
+/*
+ * DomInspector v1.1.1
+ * (c) 2018 luoye <luoyefe@gmail.com>
+ */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
@@ -308,7 +312,7 @@ var DomInspector = function () {
 		value: function destroy() {
 			this.destroyed = true;
 			this.disable();
-			this.overlay.remove();
+			this.overlay = {};
 		}
 	}, {
 		key: 'getXPath',
@@ -474,4 +478,3 @@ var DomInspector = function () {
 return DomInspector;
 
 })));
-//# sourceMappingURL=dom-inspector.js.map

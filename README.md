@@ -3,7 +3,7 @@ DomInspector
 
 Dom inspector like chrome dev tools.
 
-![](http://7xqahl.com1.z0.glb.clouddn.com/dom-inspector.gif)
+![](https://s10.mogucdn.com/mlcdn/c45406/180622_884j6ci4c4j747e3j3eihiilbif43_736x472.gif)
 
 ## Usage
 

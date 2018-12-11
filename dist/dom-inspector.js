@@ -1,5 +1,5 @@
 /*
- * DomInspector v1.1.1
+ * DomInspector v1.2.0
  * (c) 2018 luoye <luoyefe@gmail.com>
  */
 (function (global, factory) {
@@ -70,83 +70,6 @@ function throttle(func) {
 function isNull(obj) {
 	return Object.prototype.toString.call(obj).replace(/\[object[\s]/, '').replace(']', '').toLowerCase() === 'null';
 }
-
-function isDOM() {
-	var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-	return obj instanceof HTMLElement;
-}
-
-function $(selector, parent) {
-	if (!parent) return document.querySelector(selector);
-	if (isDOM(parent)) return parent.querySelector(selector);
-	return document.querySelector(selector);
-}
-
-function addRule(selector, cssObj) {
-	Object.keys(cssObj).forEach(function (item) {
-		selector.style[item] = cssObj[item];
-	});
-}
-
-function findIndex(ele, currentTag) {
-	var nth = 0;
-	while (ele) {
-		if (ele.nodeName.toLowerCase() === currentTag) nth += 1;
-		ele = ele.previousElementSibling;
-	}
-	return nth;
-}
-
-function findPos(ele) {
-	var computedStyle = getComputedStyle(ele);
-	var _x = ele.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);
-	var _y = ele.getBoundingClientRect().top - parseFloat(computedStyle['margin-top']);
-	var el = ele.parent;
-	while (el) {
-		computedStyle = getComputedStyle(el);
-		_x += el.frameElement.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);
-		_y += el.frameElement.getBoundingClientRect().top - parseFloat(computedStyle['margin-top']);
-		el = el.parent;
-	}
-	return {
-		top: _y,
-		left: _x
-	};
-}
-
-/**
- * @param  { Dom Element }
- * @return { Object }
- */
-function getElementInfo$1(ele) {
-	var result = {};
-	var requiredValue = ['border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'z-index'];
-
-	var computedStyle = getComputedStyle(ele);
-	requiredValue.forEach(function (item) {
-		result[item] = parseFloat(computedStyle[item]) || 0;
-	});
-
-	mixin(result, {
-		width: ele.offsetWidth - result['border-left-width'] - result['border-right-width'] - result['padding-left'] - result['padding-right'],
-		height: ele.offsetHeight - result['border-top-width'] - result['border-bottom-width'] - result['padding-top'] - result['padding-bottom']
-	});
-	mixin(result, findPos(ele));
-	return result;
-}
-
-var sep = 'DomInspector: ';
-
-var proxy = ['log', 'warn', 'error'];
-
-var exportObj = {};
-
-proxy.forEach(function (item) {
-	exportObj[item] = function funcName() {
-		return console[item].call(this, sep + (arguments.length <= 0 ? undefined : arguments[0]), (arguments.length <= 1 ? undefined : arguments[1]) || '');
-	};
-});
 
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -265,24 +188,122 @@ var toConsumableArray = function (arr) {
   }
 };
 
+function isDOM() {
+	var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+	return obj instanceof HTMLElement;
+}
+
+function $(selector, parent) {
+	if (!parent) return document.querySelector(selector);
+	if (isDOM(parent)) return parent.querySelector(selector);
+	return document.querySelector(selector);
+}
+
+function addRule(selector, cssObj) {
+	Object.keys(cssObj).forEach(function (item) {
+		selector.style[item] = cssObj[item];
+	});
+}
+
+function findIndex(ele, currentTag) {
+	var nth = 0;
+	while (ele) {
+		if (ele.nodeName.toLowerCase() === currentTag) nth += 1;
+		ele = ele.previousElementSibling;
+	}
+	return nth;
+}
+
+function findPos(ele) {
+	var computedStyle = getComputedStyle(ele);
+	var _x = ele.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);
+	var _y = ele.getBoundingClientRect().top - parseFloat(computedStyle['margin-top']);
+	var el = ele.parent;
+	while (el) {
+		computedStyle = getComputedStyle(el);
+		_x += el.frameElement.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);
+		_y += el.frameElement.getBoundingClientRect().top - parseFloat(computedStyle['margin-top']);
+		el = el.parent;
+	}
+	return {
+		top: _y,
+		left: _x
+	};
+}
+
+/**
+ * @param  { Dom Element }
+ * @return { Object }
+ */
+function getElementInfo$1(ele) {
+	var result = {};
+	var requiredValue = ['border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'z-index'];
+
+	var computedStyle = getComputedStyle(ele);
+	requiredValue.forEach(function (item) {
+		result[item] = parseFloat(computedStyle[item]) || 0;
+	});
+
+	mixin(result, {
+		width: ele.offsetWidth - result['border-left-width'] - result['border-right-width'] - result['padding-left'] - result['padding-right'],
+		height: ele.offsetHeight - result['border-top-width'] - result['border-bottom-width'] - result['padding-top'] - result['padding-bottom']
+	});
+	mixin(result, findPos(ele));
+	return result;
+}
+
+function getMaxZIndex() {
+	return [].concat(toConsumableArray(document.all)).reduce(function (r, e) {
+		return Math.max(r, +window.getComputedStyle(e).zIndex || 0);
+	}, 0);
+}
+
+function isParent(obj, parentObj) {
+	while (obj !== undefined && obj !== null && obj.tagName.toUpperCase() !== 'BODY') {
+		if (obj == parentObj) return true;
+		obj = obj.parentNode;
+	}
+	return false;
+}
+
+var sep = 'DomInspector: ';
+
+var proxy = ['log', 'warn', 'error'];
+
+var exportObj = {};
+
+proxy.forEach(function (item) {
+	exportObj[item] = function funcName() {
+		return console[item].call(this, sep + (arguments.length <= 0 ? undefined : arguments[0]), (arguments.length <= 1 ? undefined : arguments[1]) || '');
+	};
+});
+
 var DomInspector = function () {
 	function DomInspector() {
 		var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 		classCallCheck(this, DomInspector);
 
 		this._doc = window.document;
+
 		this.root = options.root ? isDOM(options.root) ? options.root : $(options.root) : $('body');
+
 		if (isNull(this.root)) {
 			exportObj.warn('Root element is null. Auto select body as root');
 			this.root = $('body');
 		}
+
 		this.theme = options.theme || 'dom-inspector-theme-default';
+		this.exclude = this._formatExcludeOption(options.exclude || []);
+
 		this.overlay = {};
 		this.overlayId = '';
 		this.target = '';
 		this.destroyed = false;
+
 		this._cachedTarget = '';
 		this._throttleOnMove = throttle(this._onMove.bind(this), 100);
+
 		this._init();
 	}
 
@@ -369,7 +390,8 @@ var DomInspector = function () {
 
 			var parent = this._createElement('div', {
 				id: this.overlayId,
-				class: 'dom-inspector ' + this.theme
+				class: 'dom-inspector ' + this.theme,
+				style: 'z-index: ' + (getMaxZIndex() + 1)
 			});
 
 			this.overlay = {
@@ -414,8 +436,15 @@ var DomInspector = function () {
 	}, {
 		key: '_onMove',
 		value: function _onMove(e) {
+			for (var i = 0; i < this.exclude.length; i += 1) {
+				var cur = this.exclude[i];
+				if (cur.isEqualNode(e.target) || isParent(e.target, cur)) return;
+			}
+
 			this.target = e.target;
+
 			if (this.target === this._cachedTarget) return null;
+
 			this._cachedTarget = this.target;
 			var elementInfo = getElementInfo$1(e.target);
 			var contentLevel = {
@@ -434,9 +463,6 @@ var DomInspector = function () {
 				width: elementInfo['margin-left'] + borderLevel.width + elementInfo['margin-right'],
 				height: elementInfo['margin-top'] + borderLevel.height + elementInfo['margin-bottom']
 			};
-
-			// 保证 overlay 最大 z-index
-			if (this.overlay.parent.style['z-index'] <= elementInfo['z-index']) this.overlay.parent.style['z-index'] = elementInfo['z-index'] + 1;
 
 			// so crazy
 			addRule(this.overlay.parent, { width: marginLevel.width + 'px', height: marginLevel.height + 'px', top: elementInfo.top + 'px', left: elementInfo.left + 'px' });
@@ -470,6 +496,21 @@ var DomInspector = function () {
 				tipsTop = marginLevel.height + elementInfo.top + 8;
 			}
 			addRule(this.overlay.tips, { top: tipsTop + 'px', left: elementInfo.left + 'px', display: 'block' });
+		}
+	}, {
+		key: '_formatExcludeOption',
+		value: function _formatExcludeOption() {
+			var excludeArray = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+			var result = [];
+
+			excludeArray.forEach(function (item) {
+				if (typeof item === 'string') return result.push($(item));
+
+				if (isDOM(item)) return result.push(item);
+			});
+
+			return result;
 		}
 	}]);
 	return DomInspector;

@@ -1,9 +1,15 @@
 const inspector = new DomInspector({
-	root: '#asdfd'
+	root: 'body',
+	exclude: ['.test111>span', document.querySelector('.exclude')]
+});
+
+const anotherInspector = new DomInspector({
+	root: '.another'
 });
 
 // inspector.destroy();
 inspector.enable();
+anotherInspector.enable();
 // inspector.getElementInfo();
 // inspector.disable();
 

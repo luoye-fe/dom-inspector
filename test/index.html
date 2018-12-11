@@ -10,16 +10,10 @@
         margin: 0;
         padding: 0;
     }
-    
-    p {
-        position: absolute;
-        z-index: 9999;
-    }
-    
+
     .test {
-        /*background: #c4dfb8;*/
         border-style: solid;
-        border-color: transparent;
+        border-color: #e5e5e5;
         border-width: 10px 20px 30px 40px;
         margin: 40px 30px 20px 10px;
         padding: 10px 20px 30px 40px;
@@ -28,66 +22,14 @@
         line-height: 50px;
         position: fixed;
         top: 100px;
-        left: 20px;
+        left: 200px;
         z-index: 100;
         box-sizing: border-box;
         overflow: hidden;
     }
-    /*  .test:before {
-            content: '';
-            position: absolute;
-            z-index: -2;
-            display: block;
-            top: -30px;
-            right: -30px;
-            bottom: -30px;
-            left: -30px;
-            background-color: #f9cc9d;
-        }*/
-    
-    .con {
-        width: 160px;
-        height: 110px;
-    }
-    
-    .con .margin {
-        background-color: red;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 160px;
-        height: 110px;
-    }
-    
-    .con .border {
-        background-color: green;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 130px;
-        height: 80px;
-    }
-    
-    .con .padding {
-        background-color: gray;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 120px;
-        height: 70px;
-    }
-    
-    .con #content {
-        background-color: black;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100px;
-        height: 50px;
+
+    .exclude {
+        padding: 10px;
     }
     </style>
 </head>
@@ -102,21 +44,11 @@
             </div>
         </div>
     </div>
-    <code>
-            asd
-        </code>
-    <code>
-            asd
-        </code>
-    <code>
-            asd
-        </code>
-    <code>
-            asd
-        </code>
-    <code>
-            asd
-        </code>
+    <code>asd</code>
+    <code>asd</code>
+    <code>asd</code>
+    <code>asd</code>
+    <code>asd</code>
     <div>123</div>
     <div>123</div>
     <div>123</div>
@@ -124,7 +56,17 @@
     <div>123</div>
     <div>123</div>
     <div>123</div>
-    <div class="test111">123</div>
+    <div class="test111">
+        <p>123</p>
+        <span>this one will be exclude</span>
+    </div>
+
+    <div class="exclude">
+        <div>exclude child</div>
+        <div>exclude child</div>
+        <div>exclude child</div>
+        <div class="another">exclude child but new another inspector</div>
+    </div>
     <script type="text/javascript" src="../dist/dom-inspector.js"></script>
     <script type="text/javascript" src="./index.js"></script>
 </body>

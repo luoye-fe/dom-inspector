@@ -77,4 +77,16 @@ export function getElementInfo(ele) {
 	return result;
 }
 
+export function getMaxZIndex() {
+	return [...document.all].reduce((r, e) => Math.max(r, +window.getComputedStyle(e).zIndex || 0), 0)
+}
+
+export function isParent(obj, parentObj) {
+	while (obj !== undefined && obj !== null && obj.tagName.toUpperCase() !== 'BODY') {
+		if (obj == parentObj) return true;
+		obj = obj.parentNode;
+	}
+	return false;
+}
+
 export default $;

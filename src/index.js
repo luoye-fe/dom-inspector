@@ -1,23 +1,30 @@
 import './style.css';
-import { $, getElementInfo, isDOM, addRule, findIndex } from './dom.js';
+import { $, getElementInfo, isDOM, addRule, findIndex, getMaxZIndex, isParent } from './dom.js';
 import { throttle, isNull } from './utils.js';
 import logger from './logger.js';
 
 class DomInspector {
 	constructor(options = {}) {
 		this._doc = window.document;
+
 		this.root = options.root ? (isDOM(options.root) ? options.root : $(options.root)) : $('body');
+
 		if (isNull(this.root)) {
 			logger.warn('Root element is null. Auto select body as root');
 			this.root = $('body');
 		}
+
 		this.theme = options.theme || 'dom-inspector-theme-default';
+		this.exclude = this._formatExcludeOption(options.exclude || []);
+
 		this.overlay = {};
 		this.overlayId = '';
 		this.target = '';
 		this.destroyed = false;
+
 		this._cachedTarget = '';
 		this._throttleOnMove = throttle(this._onMove.bind(this), 100);
+
 		this._init();
 	}
 	enable() {
@@ -87,7 +94,8 @@ class DomInspector {
 
 		const parent = this._createElement('div', {
 			id: this.overlayId,
-			class: `dom-inspector ${this.theme}`
+			class: `dom-inspector ${this.theme}`,
+			style: `z-index: ${getMaxZIndex() + 1}`
 		});
 
 		this.overlay = {
@@ -126,8 +134,15 @@ class DomInspector {
 		return ele;
 	}
 	_onMove(e) {
+		for (let i = 0; i < this.exclude.length; i += 1) {
+			const cur = this.exclude[i];
+			if (cur.isEqualNode(e.target) || isParent(e.target, cur)) return;
+		}
+
 		this.target = e.target;
+
 		if (this.target === this._cachedTarget) return null;
+
 		this._cachedTarget = this.target;
 		const elementInfo = getElementInfo(e.target);
 		const contentLevel = {
@@ -146,9 +161,6 @@ class DomInspector {
 			width: elementInfo['margin-left'] + borderLevel.width + elementInfo['margin-right'],
 			height: elementInfo['margin-top'] + borderLevel.height + elementInfo['margin-bottom']
 		};
-
-		// 保证 overlay 最大 z-index
-		if (this.overlay.parent.style['z-index'] <= elementInfo['z-index']) this.overlay.parent.style['z-index'] = elementInfo['z-index'] + 1;
 
 		// so crazy
 		addRule(this.overlay.parent, { width: `${marginLevel.width}px`, height: `${marginLevel.height}px`, top: `${elementInfo.top}px`, left: `${elementInfo.left}px` });
@@ -180,6 +192,17 @@ class DomInspector {
 			tipsTop = marginLevel.height + elementInfo.top + 8;
 		}
 		addRule(this.overlay.tips, { top: `${tipsTop}px`, left: `${elementInfo.left}px`, display: 'block' });
+	}
+	_formatExcludeOption(excludeArray = []) {
+		const result = [];
+
+		excludeArray.forEach(item => {
+			if (typeof item === 'string') return result.push($(item));
+
+			if (isDOM(item)) return result.push(item);
+		});
+
+		return result;
 	}
 }
 

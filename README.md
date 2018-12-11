@@ -36,13 +36,18 @@ const inspector = new DomInspector();
 ```js
 const inspector = new DomInspector({
 	root: 'body',
+	exclude: ['#exclude>div', document.querySelector('.exclude')],
 	theme: 'you-custom-theme-class'
 });
 ```
 
 * root
 
-	Dom inspector root element. `String` or `Dom`, default `body` mean `$('body')`.
+	Dom inspector root element. `String` or `Dom`, default `body`.
+
+* exclude
+
+	Not inspect some elements. `String` or `Dom` Array.
 
 * theme
 

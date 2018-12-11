@@ -1,6 +1,10 @@
 更新记录
 ==============
 
+### v1.2.0
+
+* add `exclude` option
+
 ### v1.1.1 
 
 * Fix `destroy()` error

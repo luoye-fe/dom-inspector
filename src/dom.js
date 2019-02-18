@@ -1,7 +1,7 @@
 import { mixin } from './utils.js';
 
 export function isDOM(obj = {}) {
-	return obj instanceof HTMLElement;
+	return (typeof obj === 'object') && (obj.nodeType === 1) && (typeof obj.style === 'object') && (typeof obj.ownerDocument === 'object');
 }
 
 export function $(selector, parent) {
@@ -78,7 +78,7 @@ export function getElementInfo(ele) {
 }
 
 export function getMaxZIndex() {
-	return [...document.all].reduce((r, e) => Math.max(r, +window.getComputedStyle(e).zIndex || 0), 0)
+	return [...document.all].reduce((r, e) => Math.max(r, +window.getComputedStyle(e).zIndex || 0), 0);
 }
 
 export function isParent(obj, parentObj) {

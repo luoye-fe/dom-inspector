@@ -1,6 +1,6 @@
 /*
- * DomInspector v1.2.0
- * (c) 2018 luoye <luoyefe@gmail.com>
+ * DomInspector v1.2.1
+ * (c) 2019 luoye <luoyefe@gmail.com>
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -8,7 +8,7 @@
   (global.DomInspector = factory());
 }(this, (function () { 'use strict';
 
-function __$styleInject(css, returnValue) {
+function __$styleInject (css, returnValue) {
   if (typeof document === 'undefined') {
     return returnValue;
   }
@@ -70,6 +70,22 @@ function throttle(func) {
 function isNull(obj) {
 	return Object.prototype.toString.call(obj).replace(/\[object[\s]/, '').replace(']', '').toLowerCase() === 'null';
 }
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
+
+
+
+
+
+
+
+
+
+
 
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -191,7 +207,7 @@ var toConsumableArray = function (arr) {
 function isDOM() {
 	var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-	return obj instanceof HTMLElement;
+	return (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && obj.nodeType === 1 && _typeof(obj.style) === 'object' && _typeof(obj.ownerDocument) === 'object';
 }
 
 function $(selector, parent) {

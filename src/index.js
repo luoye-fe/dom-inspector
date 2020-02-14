@@ -76,6 +76,8 @@ class DomInspector {
 			let currentSelector = ele.nodeName.toLowerCase();
 			if (ele.hasAttribute('id')) {
 				currentSelector += `#${ele.id}`;
+			} else if (ele.hasAttribute('class')) {
+				currentSelector += `.${ele.className.split(' ').join('.')}`;
 			} else {
 				const nth = findIndex(ele, currentSelector);
 				if (nth !== 1) currentSelector += `:nth-of-type(${nth})`;

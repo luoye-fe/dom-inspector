@@ -1,3 +1,5 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable max-len */
 import { mixin } from './utils.js';
 
 export function isDOM(obj = {}) {

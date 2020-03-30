@@ -118,7 +118,7 @@ class DomInspector {
 			tips: this._createSurroundEle(parent, 'tips', '<div class="tag"></div><div class="id"></div><div class="class"></div><div class="line">&nbsp;|&nbsp;</div><div class="size"></div><div class="triangle"></div>')
 		};
 
-		$('body').appendChild(parent);
+		this.root.appendChild(parent);
 	}
 	_createElement(tag, attr, content) {
 		const ele = this._doc.createElement(tag);

@@ -37,7 +37,8 @@ const inspector = new DomInspector();
 const inspector = new DomInspector({
 	root: 'body',
 	exclude: ['#exclude>div', document.querySelector('.exclude')],
-	theme: 'you-custom-theme-class'
+  theme: 'you-custom-theme-class',
+  maxZIndex: '', // max z index, if blank, will auto get document.all max z index
 });
 ```
 

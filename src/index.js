@@ -21,6 +21,7 @@ class DomInspector {
 		this.overlayId = '';
 		this.target = '';
 		this.destroyed = false;
+		this.maxZIndex = options.maxZIndex || getMaxZIndex() + 1;
 
 		this._cachedTarget = '';
 		this._throttleOnMove = throttle(this._onMove.bind(this), 100);
@@ -97,7 +98,7 @@ class DomInspector {
 		const parent = this._createElement('div', {
 			id: this.overlayId,
 			class: `dom-inspector ${this.theme}`,
-			style: `z-index: ${getMaxZIndex() + 1}`
+			style: `z-index: ${this.maxZIndex}`
 		});
 
 		this.overlay = {

@@ -1,6 +1,6 @@
 /*
- * DomInspector v1.2.1
- * (c) 2019 luoye <luoyefe@gmail.com>
+ * DomInspector v1.2.3-beta.1
+ * (c) 2020 luoye <luoyefe@gmail.com>
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -204,6 +204,8 @@ var toConsumableArray = function (arr) {
   }
 };
 
+/* eslint-disable eqeqeq */
+/* eslint-disable max-len */
 function isDOM() {
 	var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -316,6 +318,7 @@ var DomInspector = function () {
 		this.overlayId = '';
 		this.target = '';
 		this.destroyed = false;
+		this.maxZIndex = options.maxZIndex || getMaxZIndex() + 1;
 
 		this._cachedTarget = '';
 		this._throttleOnMove = throttle(this._onMove.bind(this), 100);
@@ -384,6 +387,8 @@ var DomInspector = function () {
 				var currentSelector = ele.nodeName.toLowerCase();
 				if (ele.hasAttribute('id')) {
 					currentSelector += '#' + ele.id;
+				} else if (ele.hasAttribute('class')) {
+					currentSelector += '.' + ele.className.replace(/\s+/g, ' ').split(' ').join('.');
 				} else {
 					var nth = findIndex(ele, currentSelector);
 					if (nth !== 1) currentSelector += ':nth-of-type(' + nth + ')';
@@ -407,7 +412,7 @@ var DomInspector = function () {
 			var parent = this._createElement('div', {
 				id: this.overlayId,
 				class: 'dom-inspector ' + this.theme,
-				style: 'z-index: ' + (getMaxZIndex() + 1)
+				style: 'z-index: ' + this.maxZIndex
 			});
 
 			this.overlay = {
@@ -428,7 +433,7 @@ var DomInspector = function () {
 				tips: this._createSurroundEle(parent, 'tips', '<div class="tag"></div><div class="id"></div><div class="class"></div><div class="line">&nbsp;|&nbsp;</div><div class="size"></div><div class="triangle"></div>')
 			};
 
-			$('body').appendChild(parent);
+			this.root.appendChild(parent);
 		}
 	}, {
 		key: '_createElement',

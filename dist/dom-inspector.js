@@ -1,5 +1,5 @@
 /*
- * DomInspector v1.2.3-beta.1
+ * DomInspector v1.2.4-beta.0
  * (c) 2020 luoye <luoyefe@gmail.com>
  */
 (function (global, factory) {
@@ -272,7 +272,7 @@ function getElementInfo$1(ele) {
 }
 
 function getMaxZIndex() {
-	return [].concat(toConsumableArray(document.all)).reduce(function (r, e) {
+	return [].concat(toConsumableArray(document.querySelectorAll('*'))).reduce(function (r, e) {
 		return Math.max(r, +window.getComputedStyle(e).zIndex || 0);
 	}, 0);
 }

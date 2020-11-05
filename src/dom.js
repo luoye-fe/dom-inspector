@@ -80,7 +80,7 @@ export function getElementInfo(ele) {
 }
 
 export function getMaxZIndex() {
-	return [...document.all].reduce((r, e) => Math.max(r, +window.getComputedStyle(e).zIndex || 0), 0);
+	return [...document.querySelectorAll('*')].reduce((r, e) => Math.max(r, +window.getComputedStyle(e).zIndex || 0), 0);
 }
 
 export function isParent(obj, parentObj) {

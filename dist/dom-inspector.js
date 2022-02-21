@@ -1,6 +1,6 @@
 /*
- * DomInspector v1.2.4-beta.0
- * (c) 2020 luoye <luoyefe@gmail.com>
+ * DomInspector v1.2.4-beta.1
+ * (c) 2022 luoye <luoyefe@gmail.com>
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -69,6 +69,19 @@ function throttle(func) {
 
 function isNull(obj) {
 	return Object.prototype.toString.call(obj).replace(/\[object[\s]/, '').replace(']', '').toLowerCase() === 'null';
+}
+
+function getClasses(el) {
+	return el.className.replace(/\s+/g, ' ').split(' ');
+}
+
+// Check if class lists are the same (ignoring order)
+function sameClasses(a, b) {
+	var ac = getClasses(a);
+	var bc = getClasses(b);
+	return ac.length === bc.length && ac.every(function (item) {
+		return bc.indexOf(item) > -1;
+	});
 }
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
@@ -388,7 +401,24 @@ var DomInspector = function () {
 				if (ele.hasAttribute('id')) {
 					currentSelector += '#' + ele.id;
 				} else if (ele.hasAttribute('class')) {
-					currentSelector += '.' + ele.className.replace(/\s+/g, ' ').split(' ').join('.');
+					var currentLvlSelector = getClasses(ele).join('.');
+					try {
+						var parent = ele.parentNode;
+						var siblings = [].concat(toConsumableArray(parent.childNodes)).filter(function (s) {
+							return s.nodeType === Node.ELEMENT_NODE;
+						});
+						// eslint-disable-next-line no-loop-func
+						if (siblings.some(function (s) {
+							return sameClasses(s, ele);
+						})) {
+							var index = Array.prototype.indexOf.call(siblings, ele);
+							currentSelector += '.' + currentLvlSelector + ':nth-child(' + (index + 1) + ')';
+						} else {
+							currentSelector += '.' + currentLvlSelector;
+						}
+					} catch (e) {
+						currentSelector += '.' + currentLvlSelector;
+					}
 				} else {
 					var nth = findIndex(ele, currentSelector);
 					if (nth !== 1) currentSelector += ':nth-of-type(' + nth + ')';

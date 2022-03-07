@@ -77,7 +77,7 @@ class DomInspector {
 			let currentSelector = ele.nodeName.toLowerCase();
 			if (ele.hasAttribute('id')) {
 				currentSelector += `#${ele.id}`;
-			} else if (ele.hasAttribute('class')) {
+			} else if (ele.hasAttribute('class') && getClasses(ele).length > 0) {
 				const currentLvlSelector = getClasses(ele).join('.');
 				try {
 					const parent = ele.parentNode;

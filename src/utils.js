@@ -38,7 +38,7 @@ export function isNull(obj) {
 }
 
 export function getClasses(el) {
-	return el.className.replace(/\s+/g, ' ').split(' ');
+	return el.className.replace(/\s+/g, ' ').split(' ').filter(x => x.length > 0);
 }
 
 // Check if class lists are the same (ignoring order)

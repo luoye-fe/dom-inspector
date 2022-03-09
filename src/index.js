@@ -81,9 +81,11 @@ class DomInspector {
 				const currentLvlSelector = getClasses(ele).join('.');
 				try {
 					const parent = ele.parentNode;
-					const siblings = [...parent.childNodes].filter(s => s.nodeType === Node.ELEMENT_NODE);
+					const siblings = [...parent.childNodes]
+						// eslint-disable-next-line no-loop-func
+						.filter(s => s.nodeType === Node.ELEMENT_NODE && s !== ele);
 					// eslint-disable-next-line no-loop-func
-					if (siblings.some(s => sameClasses(s, ele))) {
+					if ((ele.tagName || '').toLowerCase() !== 'html' && siblings.some(s => sameClasses(s, ele))) {
 						const index = Array.prototype.indexOf.call(siblings, ele);
 						currentSelector += `.${currentLvlSelector}:nth-child(${index + 1})`;
 					} else {

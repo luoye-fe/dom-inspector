@@ -1,5 +1,5 @@
 /*
- * DomInspector v1.2.4-beta.2
+ * DomInspector v1.2.4-beta.3
  * (c) 2022 luoye <luoyefe@gmail.com>
  */
 (function (global, factory) {
@@ -410,10 +410,12 @@ var DomInspector = function () {
 						var siblings = [].concat(toConsumableArray(parent.childNodes))
 						// eslint-disable-next-line no-loop-func
 						.filter(function (s) {
-							return s.nodeType === Node.ELEMENT_NODE && s !== ele;
+							return s.nodeType === Node.ELEMENT_NODE;
 						});
 						// eslint-disable-next-line no-loop-func
-						if ((ele.tagName || '').toLowerCase() !== 'html' && siblings.some(function (s) {
+						if ((ele.tagName || '').toLowerCase() !== 'html' && siblings.filter(function (e) {
+							return e !== ele;
+						}).some(function (s) {
 							return sameClasses(s, ele);
 						})) {
 							var index = Array.prototype.indexOf.call(siblings, ele);

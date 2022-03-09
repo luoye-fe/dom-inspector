@@ -37,4 +37,15 @@ export function isNull(obj) {
 	return Object.prototype.toString.call(obj).replace(/\[object[\s]/, '').replace(']', '').toLowerCase() === 'null';
 }
 
+export function getClasses(el) {
+	return el.className.replace(/\s+/g, ' ').split(' ').filter(x => x.length > 0);
+}
+
+// Check if class lists are the same (ignoring order)
+export function sameClasses(a, b) {
+	const ac = getClasses(a);
+	const bc = getClasses(b);
+	return ac.length === bc.length && ac.every(item => bc.indexOf(item) > -1);
+}
+
 export default null;

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" class=" js js">
+    <head>
+        <meta charset="utf-8">
+        <title>dom-inspector - classes</title>
+        <style>
+            .soup {
+                display: flex;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Classes</h1>
+        <p>Ad et adipisicing laborum voluptate. Aliquip commodo irure exercitation fugiat aliquip. Occaecat dolor est esse aliqua aute. Magna Lorem dolore in consequat do do deserunt nulla sunt duis amet.</p>
+        <ul id="main-ul">
+            <li class="ul-element">car</li>
+            <li class="">banana</li>
+            <li class="ul-element">computer</li>
+            <li class="ul-element">pen</li>
+            <li class="ul-element">pencil</li>
+            <li class="ul-element">pencil case</li>
+            <li class="ul-element">pencil sharpener</li>
+        </ul>
+        <div class="soup">
+            <img width="500" src="http://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Asparagus_soup_%28spargelsuppe%29.jpg/2880px-Asparagus_soup_%28spargelsuppe%29.jpg" alt="Soup">
+            <h2>This is soup</h2>
+        </div>
+        <h2>End of soup</h2>
+        <script type="text/javascript" src="../dist/dom-inspector.js"></script>
+        <script type="text/javascript">
+            // inspector
+            let enabled = false
+            const inspector = new DomInspector()
+
+            // btn
+            const btn = document.createElement('button')
+            const updateBtnText = () => {
+                btn.textContent = enabled ? 'Disable' : 'Enable'
+            }
+            updateBtnText()
+            btn.addEventListener('click', () => {
+                enabled = !enabled
+                enabled ? inspector.enable() : inspector.disable()
+                updateBtnText()
+            })
+            document.body.prepend(btn)
+
+            // inspect on click
+            document.body.addEventListener('click', () => {
+                if (!enabled) return
+                console.log(inspector.getSelector())
+            })
+        </script>
+    </body>
+</html>

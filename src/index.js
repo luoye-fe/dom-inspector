@@ -1,6 +1,6 @@
 import './style.css';
 import { $, getElementInfo, isDOM, addRule, findIndex, getMaxZIndex, isParent } from './dom.js';
-import { throttle, isNull } from './utils.js';
+import { throttle, isNull, sameClasses, getClasses } from './utils.js';
 import logger from './logger.js';
 
 class DomInspector {
@@ -77,8 +77,23 @@ class DomInspector {
 			let currentSelector = ele.nodeName.toLowerCase();
 			if (ele.hasAttribute('id')) {
 				currentSelector += `#${ele.id}`;
-			} else if (ele.hasAttribute('class')) {
-				currentSelector += `.${ele.className.replace(/\s+/g, ' ').split(' ').join('.')}`;
+			} else if (ele.hasAttribute('class') && getClasses(ele).length > 0) {
+				const currentLvlSelector = getClasses(ele).join('.');
+				try {
+					const parent = ele.parentNode;
+					const siblings = [...parent.childNodes]
+						// eslint-disable-next-line no-loop-func
+						.filter(s => s.nodeType === Node.ELEMENT_NODE);
+					// eslint-disable-next-line no-loop-func
+					if ((ele.tagName || '').toLowerCase() !== 'html' && siblings.filter(e => e !== ele).some(s => sameClasses(s, ele))) {
+						const index = Array.prototype.indexOf.call(siblings, ele);
+						currentSelector += `.${currentLvlSelector}:nth-child(${index + 1})`;
+					} else {
+						currentSelector += `.${currentLvlSelector}`;
+					}
+				} catch (e) {
+					currentSelector += `.${currentLvlSelector}`;
+				}
 			} else {
 				const nth = findIndex(ele, currentSelector);
 				if (nth !== 1) currentSelector += `:nth-of-type(${nth})`;
